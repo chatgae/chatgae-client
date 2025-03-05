@@ -1,7 +1,7 @@
 // 1
 import React, { useState } from 'react'
 import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
-import { launchImageLibrary } from 'react-native-image-picker'
+import * as ImagePicker from 'expo-image-picker'
 import Icon from 'react-native-vector-icons/Feather'
 import { styles } from './styles'
 
@@ -9,25 +9,32 @@ const PetProfile = ({ navigation }: any) => {
   const [petName, setPetName] = useState<string | undefined>(undefined)
   const [profileImage, setProfileImage] = useState<string | null>(null)
 
-  const pickImage = () => {
+  const pickImage = async () => {
     console.log('hi') // ✅ 이 로그는 정상적으로 출력됨
 
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      console.log('📸 이미지 선택 응답:', response) // ✅ 응답 확인
+    // 📌 사진 접근 권한 요청
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
+      console.log('🚫 사진 접근 권한이 거부됨')
+      return
+    }
 
-      if (response.didCancel) {
-        console.log('🚫 사용자가 취소했습니다.')
-        return
-      }
-      if (response.errorCode) {
-        console.error('❌ 이미지 선택 오류:', response.errorMessage)
-        return
-      }
-      if (response.assets && response.assets.length > 0) {
-        setProfileImage(response.assets[0].uri)
-        console.log('✅ 선택된 이미지:', response.assets[0].uri)
-      }
+    // 📌 사진 선택하기
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true, // 사용자가 사진을 편집할 수 있음
+      aspect: [4, 4], // 선택할 때 정사각형 비율 유지
+      quality: 1, // 사진 품질 (0~1)
     })
+
+    console.log('📸 이미지 선택 응답:', result)
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri) // ✅ 이미지 URI 저장
+      console.log('✅ 선택된 이미지:', result.assets[0].uri)
+    } else {
+      console.log('🚫 사용자가 취소했습니다.')
+    }
   }
 
   return (

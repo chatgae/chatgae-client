@@ -1,7 +1,7 @@
 // 2
 import React, { useState } from 'react'
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
-import { launchImageLibrary } from 'react-native-image-picker'
+import * as ImagePicker from 'expo-image-picker'
 import Icon from 'react-native-vector-icons/Feather'
 import { styles } from '../styles/PetProfileStyles'
 import { noseStyles } from '../styles/PetNoseStyles' // 새로운 스타일
@@ -11,21 +11,33 @@ const MAX_IMAGES = 5
 const PetNose = ({ navigation }: any) => {
   const [noseImages, setNoseImages] = useState<string[]>([])
 
-  const pickImage = () => {
+  const pickImages = async () => {
     if (noseImages.length >= MAX_IMAGES) return
 
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      if (
-        !response.didCancel &&
-        response.assets &&
-        response.assets.length > 0
-      ) {
-        const imageUri = response.assets[0].uri
-        if (imageUri) {
-          setNoseImages((prevImages) => [...prevImages, imageUri])
-        }
-      }
+    // 📌 갤러리 접근 권한 요청
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
+      console.log('🚫 갤러리 접근 권한이 거부됨')
+      return
+    }
+
+    // 📌 다중 이미지 선택
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true, // ✅ 다중 선택 허용
+      selectionLimit: MAX_IMAGES - noseImages.length, // ✅ 남은 슬롯만큼만 선택 가능
+      quality: 1,
     })
+
+    console.log('📸 이미지 선택 응답:', result)
+
+    if (!result.canceled && result.assets.length > 0) {
+      const selectedImages = result.assets.map((asset) => asset.uri) // ✅ 선택한 이미지 URI 리스트
+      setNoseImages((prevImages) => [...prevImages, ...selectedImages]) // ✅ 기존 이미지 + 새 이미지 추가
+      console.log('✅ 선택된 이미지:', selectedImages)
+    } else {
+      console.log('🚫 사용자가 취소했습니다.')
+    }
   }
 
   const removeImage = (index: number) => {
@@ -67,7 +79,7 @@ const PetNose = ({ navigation }: any) => {
             noseStyles.imagePicker,
             noseImages.length >= MAX_IMAGES && noseStyles.disabledButton,
           ]}
-          onPress={pickImage}
+          onPress={pickImages}
           disabled={noseImages.length >= MAX_IMAGES}
         >
           <Icon name="camera" size={24} color="#C79A32" />
