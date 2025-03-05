@@ -14,9 +14,26 @@ import Success from './Home/Pages/Success'
 import Fail from './Home/Pages/Fail'
 import LoadingScreen from './Loading'
 import NavBar from './Common/NavBar'
+import PetProfile from './Register/Pages/PetProfile'
+import PetNose from './Register/Pages/PetNose'
+import PetBreed from './Register/Pages/PetBreed'
+import PetDetails from './Register/Pages/PetDetails'
+import Complete from './Register/Pages/Complete'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
+
+function RegisterStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PetProfile" component={PetProfile} />
+      <Stack.Screen name="PetNose" component={PetNose} />
+      <Stack.Screen name="PetBreed" component={PetBreed} />
+      <Stack.Screen name="PetDetails" component={PetDetails} />
+      <Stack.Screen name="Complete" component={Complete} />
+    </Stack.Navigator>
+  )
+}
 
 // ✅ HomeStack 내부에서 특정 화면에서는 NavBar를 숨김
 function HomeStack() {
@@ -28,6 +45,11 @@ function HomeStack() {
       <Stack.Screen name="KakaoMap" component={KakaoMap} />
       <Stack.Screen name="Success" component={Success} />
       <Stack.Screen name="Fail" component={Fail} />
+      <Stack.Screen name="PetProfile" component={PetProfile} />
+      <Stack.Screen name="PetNose" component={PetNose} />
+      <Stack.Screen name="PetBreed" component={PetBreed} />
+      <Stack.Screen name="PetDetails" component={PetDetails} />
+      <Stack.Screen name="Complete" component={Complete} />
     </Stack.Navigator>
   )
 }
@@ -72,6 +94,7 @@ export default function App() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Main" component={MainTab} />
+        <Stack.Screen name="Register" component={RegisterStack} />
       </Stack.Navigator>
     </NavigationContainer>
   )

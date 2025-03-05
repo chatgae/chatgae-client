@@ -1,20 +1,34 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
-import Icon from "react-native-vector-icons/Feather";
-import { styles } from "./styles";
+// 1
+import React, { useState } from 'react'
+import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
+import { launchImageLibrary } from 'react-native-image-picker'
+import Icon from 'react-native-vector-icons/Feather'
+import { styles } from './styles'
 
 const PetProfile = ({ navigation }: any) => {
-  const [petName, setPetName] = useState<string | undefined>(undefined);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [petName, setPetName] = useState<string | undefined>(undefined)
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
   const pickImage = () => {
-    launchImageLibrary({ mediaType: "photo" }, (response) => {
-      if (!response.didCancel && response.assets) {
-        setProfileImage(response.assets[0].uri ?? null);
+    console.log('hi') // ✅ 이 로그는 정상적으로 출력됨
+
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      console.log('📸 이미지 선택 응답:', response) // ✅ 응답 확인
+
+      if (response.didCancel) {
+        console.log('🚫 사용자가 취소했습니다.')
+        return
       }
-    });
-  };
+      if (response.errorCode) {
+        console.error('❌ 이미지 선택 오류:', response.errorMessage)
+        return
+      }
+      if (response.assets && response.assets.length > 0) {
+        setProfileImage(response.assets[0].uri)
+        console.log('✅ 선택된 이미지:', response.assets[0].uri)
+      }
+    })
+  }
 
   return (
     <View style={styles.container}>
@@ -40,7 +54,7 @@ const PetProfile = ({ navigation }: any) => {
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            <Text style={styles.highlight}>반려견의 이름</Text>과{"\n"}
+            <Text style={styles.highlight}>반려견의 이름</Text>과{'\n'}
             <Text style={styles.highlight}>프로필 이미지</Text>를 올려주세요
           </Text>
         </View>
@@ -78,7 +92,7 @@ const PetProfile = ({ navigation }: any) => {
           onPress={() =>
             petName &&
             profileImage &&
-            navigation.navigate("PetNose", { petName, profileImage })
+            navigation.navigate('PetNose', { petName, profileImage })
           }
           disabled={!(petName && profileImage)}
         >
@@ -86,7 +100,7 @@ const PetProfile = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default PetProfile;
+export default PetProfile

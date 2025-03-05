@@ -13,6 +13,8 @@ import WebView from 'react-native-webview'
 import AlarmIcon from '../../../assets/alarm.svg'
 
 export default function Home() {
+  const navigate = useNavigation()
+
   const [location, setLocation] = useState<{
     latitude: number
     longitude: number
@@ -108,7 +110,10 @@ export default function Home() {
         <Text className="text-gray-500 text-center mb-4">
           반려가족을 등록해보세요
         </Text>
-        <TouchableOpacity className="bg-[#6B400C] py-2 px-6 rounded-full self-center">
+        <TouchableOpacity
+          className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
+          onPress={() => navigation.navigate('PetProfile')}
+        >
           <Text className="text-white font-bold">+ 등록하기</Text>
         </TouchableOpacity>
       </View>
