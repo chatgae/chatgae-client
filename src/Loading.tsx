@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import Union from '../assets/union.svg'
 
-export default function Loading() {
+export default function LoadingScreen() {
   const navigation = useNavigation()
 
   // ✅ "조회 중..." 텍스트 페이드 인/아웃 애니메이션
@@ -77,11 +77,11 @@ export default function Loading() {
   }))
 
   // ✅ 3초 후 자동으로 홈 화면 이동
-  useEffect(() => {
-    setTimeout(() => {
-      navigation.navigate('Main') // 홈으로 이동
-    }, 3000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     navigation.navigate('Main') // 홈으로 이동
+  //   }, 3000)
+  // }, [])
 
   return (
     <View className="flex-1 bg-[#FAF0C6] justify-center items-center relative">

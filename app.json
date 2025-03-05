@@ -33,6 +33,9 @@
           "recordAudioAndroid": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "kakaoMapApiKey": "b7f99dce9295cb1bd75dc9baf7bc07e7"
+    }
   }
 }

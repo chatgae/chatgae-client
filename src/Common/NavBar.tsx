@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { useNavigation } from '@react-navigation/native'
 import CommunityIcon from '../../assets/community.svg'
 import HomeIcon from '../../assets/home.svg'
 import MedicalIcon from '../../assets/medical.svg'
@@ -15,7 +16,7 @@ export default function NavBar({ state, navigation }: BottomTabBarProps) {
   ]
 
   return (
-    <View className="w-full h-20 flex flex-row justify-around items-cente bg-white ">
+    <View className="w-full h-20 flex flex-row justify-around items-center bg-white">
       {icons.map(({ name, Component, route }, index) => {
         const isSelected = state.index === index
         return (
