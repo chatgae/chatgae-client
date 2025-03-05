@@ -1,8 +1,11 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useState, useRef } from 'react'
 import { Button, Text, TouchableOpacity, View, Image } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 export default function App() {
+  const navigation = useNavigation()
+
   const [facing, setFacing] = useState<CameraType>('back')
   const [photoUri, setPhotoUri] = useState<string | null>(null)
   const [permission, requestPermission] = useCameraPermissions()
@@ -35,7 +38,13 @@ export default function App() {
       setPhotoUri(photo.uri)
       console.log('사진 촬영 완료:', photo.uri)
 
-      uploadImage(photo.uri)
+      // ✅ 로딩 화면으로 이동
+      navigation.navigate('Loading')
+
+      await uploadImage(photo.uri) // ✅ 서버로 이미지 전송
+
+      // ✅ 업로드 완료 후 홈으로 이동
+      navigation.replace('Main')
     }
   }
 

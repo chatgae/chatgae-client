@@ -13,7 +13,7 @@ export default function Home() {
         {/* <Logo /> */}
         <Image
           source={require('../../../assets/logo.png')}
-          style={{ width: 58, height: 36 }}
+          style={{ width: 58, height: 32 }}
         />
         <TouchableOpacity>
           <AlarmIcon size={24} />
