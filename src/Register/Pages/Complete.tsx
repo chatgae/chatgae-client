@@ -29,9 +29,9 @@ const Complete = ({ navigation }: any) => {
         style={completeStyles.fireworks}
       /> */}
 
-      <View className="absolute top-0 left-0 w-full h-[300px] items-center justify-center">
+      {/* <View className="absolute top-0 left-0 w-full h-[300px] items-center justify-center">
         <Congrats />
-      </View>
+      </View> */}
 
       {/* 🔙 뒤로 가기 버튼 */}
       <TouchableOpacity

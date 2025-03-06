@@ -24,8 +24,9 @@ export default function Fail() {
         </View>
 
         {/* 🐶 반려동물 사진 */}
+        {/* <NoneProfile className="w-32 h-32 rounded-full" /> */}
         <Image
-          source={require('../../../assets/dogProfile.png')}
+          source={require('../../../assets/noneRegisteredProfile.png')}
           className="w-32 h-32 rounded-full"
         />
         <Text className="text-lg font-bold mt-4">강아지 (?세)</Text>
@@ -41,9 +42,7 @@ export default function Fail() {
           className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
           onPress={() => navigation.navigate('CameraScreen2')}
         >
-          <Text className="text-lg text-white font-bold">
-            외형 사진 찍으러 가기
-          </Text>
+          <Text className="text-lg text-white font-bold">유실견 신고하기</Text>
         </TouchableOpacity>
       </View>
     </View>
