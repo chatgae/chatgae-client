@@ -1,21 +1,21 @@
 // 2
-import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import Icon from "react-native-vector-icons/Feather";
-import { styles } from "../Styles/PetProfileStyles";
-import { noseStyles } from "../Styles/PetNoseStyles"; // 새로운 스타일
-import { usePetStore } from "../Zustand/PetStore";
+import React, { useState } from 'react'
+import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
+import Icon from 'react-native-vector-icons/Feather'
+import { styles } from '../Styles/PetProfileStyles'
+import { noseStyles } from '../Styles/PetNoseStyles' // 새로운 스타일
+import { usePetStore } from '../Zustand/PetStore'
 
 const MAX_IMAGES = 5
 
 const PetNose = ({ navigation }: any) => {
-  const { petInfo, addNoseImage, removeNoseImage } = usePetStore();
+  const { petInfo, addNoseImage, removeNoseImage } = usePetStore()
 
-  const noseImages = petInfo.noseImages ?? [];
+  const noseImages = petInfo.noseImages ?? []
 
   const pickImages = async () => {
-    if (petInfo.noseImages.length >= MAX_IMAGES) return;
+    if (petInfo.noseImages.length >= MAX_IMAGES) return
 
     // 📌 갤러리 접근 권한 요청
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -35,13 +35,13 @@ const PetNose = ({ navigation }: any) => {
     console.log('📸 이미지 선택 응답:', result)
 
     if (!result.canceled && result.assets.length > 0) {
-      result.assets.forEach((asset) => addNoseImage(asset.uri));
+      result.assets.forEach((asset) => addNoseImage(asset.uri))
     }
   }
 
   const removeImage = (index: number) => {
-    removeNoseImage(index);
-  };
+    removeNoseImage(index)
+  }
 
   return (
     <View style={styles.container}>
@@ -125,7 +125,7 @@ const PetNose = ({ navigation }: any) => {
             styles.nextButton,
             petInfo.noseImages.length < MAX_IMAGES && styles.disabledButton,
           ]}
-          onPress={() => navigation.navigate("PetBreed")}
+          onPress={() => navigation.navigate('PetBreed')}
           disabled={petInfo.noseImages.length < MAX_IMAGES}
         >
           <Text style={styles.buttonText}>다음</Text>
