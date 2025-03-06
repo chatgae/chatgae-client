@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { styles } from "../Styles/PetProfileStyles"; // 기존 스타일 재사용
-import { breedStyles } from "../Styles/PetBreedStyles"; // 새로운 스타일
+import { breedStyles } from "../Styles/PetBreedstyles"; // 새로운 스타일
 import { usePetStore } from "../Zustand/PetStore";
 import Icon from "react-native-vector-icons/Feather";
 
