@@ -1,28 +1,35 @@
 {
   "expo": {
-    "name": "chatgae-client",
+    "name": "chatgae",
     "slug": "chatgae-client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FAF0C6"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zention"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#FAF0C6"
+      },
+      "package": "com.zention",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     },
     "plugins": [
       [
@@ -35,7 +42,10 @@
       ]
     ],
     "extra": {
-      "kakaoMapApiKey": "b7f99dce9295cb1bd75dc9baf7bc07e7"
+      "kakaoMapApiKey": "b7f99dce9295cb1bd75dc9baf7bc07e7",
+      "eas": {
+        "projectId": "cc2b53d7-e9a9-43e8-9593-d86eda32e811"
+      }
     }
   }
 }
