@@ -1,29 +1,29 @@
-import React from "react";
+import React from 'react'
+import { View, Text, Image, TouchableOpacity, SafeAreaView } from 'react-native'
+import { styles } from '../Styles/PetProfileStyles' // 기존 스타일 재사용
+import { completeStyles } from '../Styles/CompleteStyles' // 새로운 스타일
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
-import { styles } from "../Styles/PetProfileStyles"; // 기존 스타일 재사용
-import { completeStyles } from "../Styles/CompleteStyles"; // 새로운 스타일
-import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/Feather";
-import Congrats from "../Components/Congrats";
-import { RootStackParamList } from "../../App";
-import { usePetStore } from "../Zustand/PetStore";
+  useRoute,
+  useNavigation,
+  RouteProp,
+  NavigationProp,
+} from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/Feather'
+import Congrats from '../Components/Congrats'
+import { RootStackParamList } from '../../App'
+import { usePetStore } from '../Zustand/PetStore'
+import { StackNavigationProp } from '@react-navigation/stack'
 
 // ✅ RouteProp을 이용하여 route.params의 타입을 명확히 지정
-type CompleteScreenRouteProp = RouteProp<RootStackParamList, "Complete">;
+type CompleteScreenRouteProp = RouteProp<RootStackParamList, 'Complete'>
 
 const Complete = () => {
-  const route = useRoute<CompleteScreenRouteProp>();
-  const navigation = useNavigation();
-  const { petData } = usePetStore();
+  const route = useRoute<CompleteScreenRouteProp>()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const { petData } = usePetStore()
 
   const profileImg =
-    petData.profile || require("../../../assets/noneRegisteredProfile.png");
+    petData.profile || require('../../../assets/noneRegisteredProfile.png')
 
   // ✅ `route.params`에서 반려견 정보 가져오기
   // const petInfo = route.params?.petInfo;
@@ -33,7 +33,7 @@ const Complete = () => {
       <View className="flex-1 justify-center items-center">
         <Text>반려견 정보를 불러올 수 없습니다.</Text>
       </View>
-    );
+    )
   }
 
   return (
@@ -68,7 +68,7 @@ const Complete = () => {
             {petData.nickname} ({petData.age}세)
           </Text>
           <Text className="text-gray-500 mt-2">
-            {petData.breed} - {petData.gender === "M" ? "남아" : "여아"}
+            {petData.breed} - {petData.gender === 'M' ? '남아' : '여아'}
           </Text>
         </View>
       </View>
@@ -77,13 +77,13 @@ const Complete = () => {
       <View className="absolute bottom-10 w-full px-6">
         <TouchableOpacity
           className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
-          onPress={() => navigation.navigate("HomeMain")}
+          onPress={() => navigation.navigate('HomeMain')}
         >
           <Text className="text-lg text-white font-bold">찾개 시작하기</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default Complete;
+export default Complete

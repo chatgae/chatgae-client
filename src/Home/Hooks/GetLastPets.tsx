@@ -49,7 +49,7 @@ export default function GetLastPets() {
         setLostDogs([])
       }
     } catch (err: any) {
-      console.error('❌ 유실견 데이터 로딩 실패:', err.message)
+      console.log('❌ 유실견 데이터 로딩 실패:', err.message)
       setError(err.message || '유실견 데이터를 불러오지 못했습니다.')
     } finally {
       setLoading(false)

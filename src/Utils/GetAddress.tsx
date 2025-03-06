@@ -33,7 +33,7 @@ export async function getAddressFromCoordinates(
       return '주소 정보 없음'
     }
   } catch (error) {
-    console.error('❌ 주소 변환 실패:', error)
+    console.log('❌ 주소 변환 실패:', error)
     return '주소 변환 실패'
   }
 }
