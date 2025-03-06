@@ -14,3 +14,12 @@ export interface GetPetsReponse {
   status: string
   data?: Pet[]
 }
+
+export interface PetData {
+  age: number
+  birthday: string
+  breed: string
+  gender: string
+  nickname: string
+  profile: string
+}

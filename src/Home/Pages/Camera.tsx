@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Dimensions,
 } from 'react-native'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import BackArrow from '../../../assets/backArrow.svg'
 import Nose from '../../../assets/nose.svg'
 import { RootStackParamList } from '../../App'
+import { usePetStore } from '../Stores/UsePetStore'
 
 export default function CameraScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
@@ -20,10 +22,13 @@ export default function CameraScreen() {
   const [photoUri, setPhotoUri] = useState<string | null>(null)
   const [permission, requestPermission] = useCameraPermissions()
   const cameraRef = useRef<CameraView | null>(null)
+  const { setPetData } = usePetStore()
+
+  const { width, height } = Dimensions.get('window')
+  const squareSize = width // ✅ 정사각형 크기 (가로 폭에 맞춤)
 
   // ✅ 애니메이션 효과 (툴팁)
   const fadeAnim = useRef(new Animated.Value(1)).current
-
   useEffect(() => {
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
@@ -63,6 +68,7 @@ export default function CameraScreen() {
     const result = await uploadImage(photo.uri)
 
     if (result?.status === 'success') {
+      setPetData(result.data.pet)
       navigation.replace('Success') // ✅ 성공 시 SuccessScreen 이동
     } else {
       navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
@@ -92,57 +98,62 @@ export default function CameraScreen() {
       console.log('✅ 업로드 성공:', response.data)
       return response.data // ✅ 서버 응답 반환
     } catch (error) {
-      console.error('❌ 업로드 실패:', error)
+      console.log('❌ 업로드 실패:', error)
       return null // ✅ 실패 시 null 반환
     }
   }
 
   return (
-    <View className="flex-1 justify-center items-center">
-      <CameraView
-        ref={(ref) => (cameraRef.current = ref)}
-        className="w-full h-full"
-        facing={facing}
+    <View className="flex-1 bg-black justify-center items-center">
+      {/* 🔙 뒤로 가기 버튼 */}
+      <View className="absolute top-12 left-4 z-10">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          className="bg-white p-2 rounded-full shadow-lg"
+        >
+          <BackArrow size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      {/* 📷 정사각형 카메라 뷰 */}
+      <View
+        style={{ width: squareSize, height: squareSize, overflow: 'hidden' }}
       >
-        {/* 🔙 뒤로 가기 버튼 */}
-        <View className="absolute top-12 left-4 z-10">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="bg-white p-2 rounded-full shadow-lg"
-          >
-            <BackArrow size={24} color="black" />
-          </TouchableOpacity>
-        </View>
+        <CameraView
+          ref={(ref) => (cameraRef.current = ref)}
+          style={{ width: squareSize, height: squareSize }}
+          facing={facing}
+        />
+      </View>
 
-        {/* 🛠️ 툴팁 추가 (3초 후 사라짐) */}
-        <View className="absolute w-full top-1/3 flex items-center">
-          <Animated.View
-            style={{
-              opacity: fadeAnim,
-              marginBottom: 8,
-              paddingVertical: 8,
-              paddingHorizontal: 12,
-              backgroundColor: '#FAF0C6',
-              borderRadius: 8,
-            }}
-          >
-            <Text className="text-black text-sm">
-              아래에 강아지의 코를 맞춰주세요!
-            </Text>
-          </Animated.View>
+      {/* 🛠️ 툴팁 추가 (3초 후 사라짐) */}
+      <View className="absolute w-full top-1/4 flex items-center">
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            marginBottom: 8,
+            paddingVertical: 8,
+            paddingHorizontal: 12,
+            backgroundColor: '#FAF0C6',
+            borderRadius: 8,
+          }}
+        >
+          <Text className="text-black text-sm">
+            아래에 강아지의 코를 맞춰주세요!
+          </Text>
+        </Animated.View>
 
-          {/* 🐶 Nose SVG */}
-          <Nose width={300} height={300} />
-        </View>
+        {/* 🐶 Nose SVG */}
+        <Nose width={300} height={300} />
+      </View>
 
-        {/* 📸 하단 촬영 버튼 */}
-        <View className="absolute bottom-14 w-full flex items-center">
-          <TouchableOpacity
-            onPress={takeAndUploadPicture}
-            className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300"
-          />
-        </View>
-      </CameraView>
+      {/* 📸 하단 촬영 버튼 */}
+      <View className="absolute bottom-14 w-full flex items-center">
+        <TouchableOpacity
+          onPress={takeAndUploadPicture}
+          className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300"
+        />
+      </View>
 
       {/* ✅ 촬영한 사진 미리보기 */}
       {/* {photoUri && (

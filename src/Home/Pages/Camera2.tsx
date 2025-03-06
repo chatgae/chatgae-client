@@ -67,9 +67,10 @@ export default function CameraScreen2() {
     const result = await uploadImage(photo.uri)
     setLoading(false)
 
-    if (result?.success) {
-      navigation.replace('Home') // ✅ 성공 시 Home 이동
+    if (result?.status === 'success') {
+      navigation.replace('Main') // ✅ 성공 시 Home 이동
     } else {
+      alert('사진을 다시 찍어주세요!')
       navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
     }
   }
@@ -83,8 +84,11 @@ export default function CameraScreen2() {
       type: 'image/jpeg',
     } as any) // ✅ 타입 충돌 방지
 
-    formData.append('latitude', '33.4852455')
-    formData.append('longitude', '126.4746819')
+    // ✅ 위도, 경도를 `coord` 필드에 JSON 형태로 추가
+    formData.append(
+      'coord',
+      JSON.stringify({ latitude: 33.4852455, longitude: 126.4746819 })
+    )
 
     try {
       const response = await axios.post(
@@ -98,7 +102,7 @@ export default function CameraScreen2() {
       console.log('✅ 업로드 성공:', response.data)
       return response.data // ✅ 서버 응답 반환
     } catch (error) {
-      console.error('❌ 업로드 실패:', error)
+      console.log('❌ 업로드 실패:', error)
       return null // ✅ 실패 시 null 반환
     }
   }
@@ -121,7 +125,7 @@ export default function CameraScreen2() {
         </View>
 
         {/* ✅ 중앙에 SVG 추가 */}
-        <View className="absolute w-full top-1/3 flex items-center">
+        <View className="absolute w-full top-1/4 flex items-center">
           {/* 🛠️ 툴팁 추가 */}
           <Animated.View
             style={{
@@ -138,7 +142,7 @@ export default function CameraScreen2() {
             </Text>
           </Animated.View>
 
-          {/* 🐶 Dog SVG */}
+          {/* 🐶 Nose SVG */}
           <DogBodyLine width={300} height={300} />
         </View>
 
@@ -146,10 +150,7 @@ export default function CameraScreen2() {
         <View className="absolute bottom-14 w-full flex items-center">
           <TouchableOpacity
             onPress={takeAndUploadPicture}
-            disabled={loading} // ✅ 업로드 중 버튼 비활성화
-            className={`w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300 ${
-              loading ? 'opacity-50' : ''
-            }`}
+            className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300"
           />
         </View>
       </CameraView>

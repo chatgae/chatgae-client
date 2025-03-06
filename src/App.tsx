@@ -20,8 +20,8 @@ import PetBreed from './Register/Pages/PetBreed'
 import PetDetails from './Register/Pages/PetDetails'
 import Complete from './Register/Pages/Complete'
 
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator()
+const Stack = createStackNavigator()
 
 // ✅ 반려견 등록 과정 (RegisterStack)
 function RegisterStack() {
@@ -33,7 +33,7 @@ function RegisterStack() {
       <Stack.Screen name="PetDetails" component={PetDetails} />
       <Stack.Screen name="Complete" component={Complete} />
     </Stack.Navigator>
-  );
+  )
 }
 
 // ✅ MainTab (NavBar가 필요한 화면만 포함)
@@ -48,7 +48,7 @@ function MainTab() {
       <Tab.Screen name="건강" component={MedicalScreen} />
       <Tab.Screen name="마이페이지" component={MyPageScreen} />
     </Tab.Navigator>
-  );
+  )
 }
 
 // ✅ 최상위 AppStack
@@ -73,9 +73,27 @@ export default function App() {
         <Stack.Screen name="Complete" component={Complete} />
       </Stack.Navigator>
     </NavigationContainer>
-  );
+  )
 }
 
 export type RootStackParamList = {
-  Loading: { mode: "조회" | "등록" }; // ✅ "LoadingScreen"이 아니라 "Loading" 사용
-};
+  Splash: undefined
+  Loading: { mode: '조회' | '등록' }
+  Main: undefined
+  Register: undefined
+  HomeMain: undefined
+  비문카메라: undefined
+  CameraScreen2: undefined
+  KakaoMap: undefined
+  Success: { petData?: any } // Add petData parameter for Success screen
+  Fail: undefined
+  PetProfile: undefined
+  PetNose: undefined
+  PetBreed: undefined
+  PetDetails: undefined
+  Complete: undefined
+  홈: undefined
+  커뮤니티: undefined
+  건강: undefined
+  마이페이지: undefined
+}
