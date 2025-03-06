@@ -22,7 +22,7 @@ export default function Success() {
       <View className="absolute top-0 left-0 w-full h-[300px] items-center mb-8">
         <Text className="text-2xl font-bold text-[#D8961A]">조회 성공</Text>
         <Text className="text-lg text-gray-600 mt-1">
-          조회된 반려동물입니다.
+          등록된 반려동물입니다.
         </Text>
       </View>
 

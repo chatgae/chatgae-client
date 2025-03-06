@@ -263,7 +263,7 @@ const PetDetails = ({ navigation }: any) => {
         </View>
       </Modal>
     </View>
-  );
-};
+  )
+}
 
-export default PetDetails;
+export default PetDetails

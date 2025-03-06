@@ -1,149 +1,170 @@
-// TODO: 지도 클릭하면 지도로 이동하게 개선하기
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
-  Alert,
   ActivityIndicator,
+  ScrollView,
+  FlatList,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import * as Location from 'expo-location'
-import WebView from 'react-native-webview'
 import AlarmIcon from '../../../assets/alarm.svg'
+import { usePetStore } from '../Stores/UsePetStore'
+import GetPets from '../Hooks/GetPets'
+import { useLostDogsStore } from '../Stores/UseLastPetStore'
+import GetLastPets from '../Hooks/GetLastPets'
 
 export default function Home() {
-  const navigate = useNavigation()
-
-  const [location, setLocation] = useState<{
-    latitude: number
-    longitude: number
-  } | null>(null)
-  const [loading, setLoading] = useState(true)
   const navigation = useNavigation()
+  const { lostDogs } = useLostDogsStore()
+  const { myPets } = usePetStore()
+  const { loading, error } = GetPets()
+  GetLastPets()
+
+  // ✅ 자동 슬라이드 기능
+  const flatListRef = useRef<FlatList>(null)
+  const scrollIndex = useRef(0)
 
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert('위치 권한이 필요합니다!')
-        setLoading(false)
-        return
-      }
+    if (lostDogs.length > 1) {
+      const interval = setInterval(() => {
+        if (flatListRef.current) {
+          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length
+          flatListRef.current.scrollToIndex({
+            index: scrollIndex.current,
+            animated: true,
+          })
+        }
+      }, 3000) // 3초마다 슬라이드
 
-      let currentLocation = await Location.getCurrentPositionAsync({})
-      setLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      })
-      setLoading(false)
-    })()
-  }, [])
-
-  const KAKAO_MAP_API_KEY = process.env.EXPO_PUBLIC_KAKAO_MAP_API_KEY
-
-  // ✅ `location`이 있을 때만 `html`을 생성
-  const html =
-    location?.latitude && location?.longitude
-      ? `
-      <!DOCTYPE html>
-      <html lang="ko">
-      <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <script type="text/javascript" 
-            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_MAP_API_KEY}&autoload=false"></script>
-          <style>
-              * { margin: 0; padding: 0; }
-              html, body, #map { width: 100%; height: 100%; border-radius: 10px; }
-          </style>
-      </head>
-      <body>
-          <div id="map"></div>
-          <script>
-              window.onload = function () {
-                  kakao.maps.load(function() {
-                      var container = document.getElementById('map');
-                      var options = {
-                          center: new kakao.maps.LatLng(${location?.latitude}, ${location?.longitude}),
-                          level: 3
-                      };
-                      var map = new kakao.maps.Map(container, options);
-
-                      var markerPosition  = new kakao.maps.LatLng(${location?.latitude}, ${location?.longitude}); 
-
-                      var marker = new kakao.maps.Marker({
-                          position: markerPosition
-                      });
-
-                      marker.setMap(map);
-                  });
-              };
-          </script>
-      </body>
-      </html>`
-      : ''
+      return () => clearInterval(interval)
+    }
+  }, [lostDogs])
 
   return (
     <View className="flex-1 bg-white px-4 pt-12">
       {/* 헤더 */}
-      <View className="flex-row justify-between items-center">
+      <View className="flex-row justify-between items-center mb-4">
         <Image
           source={require('../../../assets/logo.png')}
-          style={{ width: 58, height: 32 }}
+          className="w-16 h-8"
         />
         <TouchableOpacity>
           <AlarmIcon size={24} />
         </TouchableOpacity>
       </View>
 
-      {/* 섹션 제목 */}
-      <Text className="text-xl font-bold mt-4 mb-4">나의 반려가족</Text>
-
-      {/* 반려가족 없음 카드 */}
-      <View className="bg-gray-100 rounded-lg p-4 shadow-sm mb-6">
-        <Text className="text-gray-700 text-center mb-1">
-          등록되어있는
-          <Text className="text-[#EAB439] font-bold"> 반려가족</Text>이 없어요!
-        </Text>
-        <Text className="text-gray-500 text-center mb-4">
-          반려가족을 등록해보세요
-        </Text>
-        <TouchableOpacity
-          className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-          onPress={() => navigation.navigate('PetProfile')}
-        >
-          <Text className="text-white font-bold">+ 등록하기</Text>
-        </TouchableOpacity>
+      {/* 반려가족 섹션 */}
+      <View className="flex flex-row  justify-between">
+        <Text className="text-xl font-bold">나의 반려가족</Text>
+        {/* ✅ 반려가족이 있어도 등록하기 버튼을 유지 */}
+        {myPets.length != 0 && (
+          <TouchableOpacity
+            className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
+            onPress={() => navigation.navigate('PetProfile')}
+          >
+            <Text className="text-white font-bold">등록하기</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* 유실견 신고 섹션 */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#EAB439" className="my-4" />
+      ) : error ? (
+        <Text className="text-red-500">에러 발생: {error}</Text>
+      ) : myPets.length > 0 ? ( // ✅ 반려가족이 있으면 슬라이드 표시
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="flex"
+        >
+          <View className="flex-row space-x-4 mt-5">
+            {myPets.map((pet) => (
+              <View
+                key={pet.petId}
+                className="bg-white shadow-md rounded-xl p-4 w-[134px] h-[144px] items-center"
+              >
+                {/* 🐶 프로필 이미지 (원형) */}
+                <Image
+                  source={{ uri: pet.profile }}
+                  className="w-14 h-14 rounded-full mb-3"
+                />
+                {/* 🐶 반려동물 이름 및 나이 */}
+                <Text className="text-center text-xs font-bold">
+                  {pet.nickname} ({pet.age}세)
+                </Text>
+                {/* 🐶 품종 및 성별 */}
+                <Text className="text-center text-[#868686] text-xs">
+                  {pet.breed} - {pet.gender}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      ) : (
+        // ✅ 반려가족이 없으면 등록 안내 카드 표시
+        <View className="bg-gray-100 rounded-lg p-4 shadow-sm mb-6 mt-4">
+          <Text className="text-gray-700 text-center mb-1">
+            등록되어있는
+            <Text className="text-[#EAB439] font-bold"> 반려가족</Text>이
+            없어요!
+          </Text>
+          <Text className="text-gray-500 text-center mb-4">
+            반려가족을 등록해보세요
+          </Text>
+          <TouchableOpacity
+            className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
+            onPress={() => navigation.navigate('PetProfile')}
+          >
+            <Text className="text-white font-bold">등록하기</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* 유실견 신고 버튼 */}
       <TouchableOpacity
         className="bg-[#EAB439] rounded-lg py-4 px-6 flex-row items-center justify-center shadow-md"
         activeOpacity={0.8}
         onPress={() => navigation.navigate('비문카메라')}
       >
-        {/* <Notice width={24} height={24} fill="white" className="mr-2" /> */}
-        <Text className="text-white font-bold text-lg">유실견 신고하기</Text>
+        <Text className="text-white font-bold text-lg">
+          유기견을 발견했어요
+        </Text>
       </TouchableOpacity>
 
-      {/* 유실견 신고 지도 섹션 */}
+      {/* 유실견 섹션 */}
       <Text className="text-xl font-bold mt-6 mb-3">
         내 주변 유실견 신고 현황
       </Text>
-      {!location?.latitude && !location?.longitude ? (
+
+      {lostDogs.length === 0 ? (
         <View className="flex justify-center items-center h-48">
-          <ActivityIndicator size="large" color="#EAB439" />
-          <Text className="mt-2 text-gray-700">위치를 불러오는 중...</Text>
+          <Text className="text-gray-700">주변에 유실견 신고가 없습니다.</Text>
         </View>
       ) : (
-        <TouchableOpacity onPress={() => navigation.navigate('KakaoMap')}>
-          <View className="w-full h-48 rounded-lg overflow-hidden border border-gray-300">
-            <WebView originWhitelist={['*']} source={{ html }} />
-          </View>
-        </TouchableOpacity>
+        <FlatList
+          ref={flatListRef}
+          data={lostDogs}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View className="bg-white border border-gray-300 shadow-md rounded-lg p-4 w-48 mx-2">
+              <Image
+                source={{ uri: item.imageUrl }}
+                className="w-24 h-24 rounded-lg"
+              />
+              <Text className="text-center font-semibold mt-2">
+                {item.address}
+              </Text>
+              <Text className="text-center text-gray-500">
+                등록일: {item.registeredAt}
+              </Text>
+            </View>
+          )}
+        />
       )}
     </View>
   )

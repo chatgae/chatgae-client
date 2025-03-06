@@ -8,62 +8,62 @@ import Icon from "react-native-vector-icons/Feather";
 
 const dogBreeds = [
   {
-    category: "ㄱ~ㅁ",
+    category: 'ㄱ~ㅁ',
     breeds: [
-      "골든리트리버",
-      "닥스훈트",
-      "래브라도 리트리버",
-      "몰티즈",
-      "미니어처 슈나우저",
-      "미니어처 푸들",
-      "미니어처 핀셔",
+      '골든리트리버',
+      '닥스훈트',
+      '래브라도 리트리버',
+      '몰티즈',
+      '미니어처 슈나우저',
+      '미니어처 푸들',
+      '미니어처 핀셔',
     ],
   },
   {
-    category: "ㅂ~ㅅ",
+    category: 'ㅂ~ㅅ',
     breeds: [
-      "베들링턴 테리어",
-      "보더콜리",
-      "보스턴 테리어",
-      "비글",
-      "비숑 프리제",
-      "사모예드",
-      "셰틀랜드 쉽독",
-      "스탠더드 푸들",
-      "시바 이누",
-      "시베리안 허스키",
-      "시츄",
+      '베들링턴 테리어',
+      '보더콜리',
+      '보스턴 테리어',
+      '비글',
+      '비숑 프리제',
+      '사모예드',
+      '셰틀랜드 쉽독',
+      '스탠더드 푸들',
+      '시바 이누',
+      '시베리안 허스키',
+      '시츄',
     ],
   },
   {
-    category: "ㅇ~ㅋ",
+    category: 'ㅇ~ㅋ',
     breeds: [
-      "아메리칸 코카 스파니엘",
-      "요크셔 테리어",
-      "웰시 코기",
-      "이탈리안 그레이하운드",
-      "제페니스 스피츠",
-      "진돗개",
-      "치와와",
-      "카바리에 킹찰스 스파니엘",
-      "코카 스파니엘",
+      '아메리칸 코카 스파니엘',
+      '요크셔 테리어',
+      '웰시 코기',
+      '이탈리안 그레이하운드',
+      '제페니스 스피츠',
+      '진돗개',
+      '치와와',
+      '카바리에 킹찰스 스파니엘',
+      '코카 스파니엘',
     ],
   },
   {
-    category: "ㅌ~ㅎ",
+    category: 'ㅌ~ㅎ',
     breeds: [
-      "토이푸들",
-      "파피용",
-      "퍼그",
-      "페키니즈",
-      "펨브록 웰시코기",
-      "포메라니안",
-      "푸들",
-      "풍산개",
-      "프렌치 불도그",
+      '토이푸들',
+      '파피용',
+      '퍼그',
+      '페키니즈',
+      '펨브록 웰시코기',
+      '포메라니안',
+      '푸들',
+      '풍산개',
+      '프렌치 불도그',
     ],
   },
-];
+]
 
 const PetBreed = ({ navigation }: any) => {
   const { petInfo, setBreed } = usePetStore();
@@ -103,13 +103,13 @@ const PetBreed = ({ navigation }: any) => {
       <View style={breedStyles.topBreedContainer}>
         <TouchableOpacity
           style={breedStyles.breedButton}
-          onPress={() => handleSelectBreed("견종 모름")}
+          onPress={() => handleSelectBreed('견종 모름')}
         >
           <Text style={breedStyles.breedText}>견종 모름</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={breedStyles.breedButton}
-          onPress={() => handleSelectBreed("믹스견")}
+          onPress={() => handleSelectBreed('믹스견')}
         >
           <Text style={breedStyles.breedText}>믹스견</Text>
         </TouchableOpacity>
@@ -141,7 +141,7 @@ const PetBreed = ({ navigation }: any) => {
         )}
       />
     </View>
-  );
-};
+  )
+}
 
-export default PetBreed;
+export default PetBreed

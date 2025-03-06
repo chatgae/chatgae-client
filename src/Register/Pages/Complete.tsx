@@ -1,3 +1,4 @@
+// 5
 import React from "react";
 import {
   View,
@@ -6,9 +7,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+//import LottieView from "lottie-react-native"; // 🎆 Lottie 애니메이션 추가
 import { styles } from "../Styles/PetProfileStyles"; // 기존 스타일 재사용
 import { completeStyles } from "../Styles/CompleteStyles"; // 새로운 스타일
 import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
+//import fireworks from "../../../assets/fireworks.json";
 import Icon from "react-native-vector-icons/Feather";
 import Congrats from "../Components/Congrats";
 import { RootStackParamList } from "../../App";
@@ -70,13 +73,13 @@ const Complete = () => {
       <View className="absolute bottom-10 w-full px-6">
         <TouchableOpacity
           className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
-          onPress={() => navigation.navigate("HomeMain")}
+          onPress={() => navigation.navigate('HomeMain')}
         >
           <Text className="text-lg text-white font-bold">찾개 시작하기</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default Complete;
+export default Complete

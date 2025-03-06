@@ -1,24 +1,24 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import SplashScreen from "./Splash";
-import Home from "./Home/Pages/Home";
-import CommunityScreen from "./Preparing";
-import MedicalScreen from "./Preparing";
-import MyPageScreen from "./Preparing";
-import CameraScreen from "./Home/Pages/Camera";
-import CameraScreen2 from "./Home/Pages/Camera2";
-import KakaoMap from "./Home/Components/KakaoMap";
-import Success from "./Home/Pages/Success";
-import Fail from "./Home/Pages/Fail";
-import LoadingScreen from "./Loading";
-import NavBar from "./Common/NavBar";
-import PetProfile from "./Register/Pages/PetProfile";
-import PetNose from "./Register/Pages/PetNose";
-import PetBreed from "./Register/Pages/PetBreed";
-import PetDetails from "./Register/Pages/PetDetails";
-import Complete from "./Register/Pages/Complete";
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStackNavigator } from '@react-navigation/stack'
+import SplashScreen from './Splash'
+import Home from './Home/Pages/Home'
+import CommunityScreen from './Preparing'
+import MedicalScreen from './Preparing'
+import MyPageScreen from './Preparing'
+import CameraScreen from './Home/Pages/Camera'
+import CameraScreen2 from './Home/Pages/Camera2'
+import KakaoMap from './Home/Pages/KakaoMap'
+import Success from './Home/Pages/Success'
+import Fail from './Home/Pages/Fail'
+import LoadingScreen from './Loading'
+import NavBar from './Common/NavBar'
+import PetProfile from './Register/Pages/PetProfile'
+import PetNose from './Register/Pages/PetNose'
+import PetBreed from './Register/Pages/PetBreed'
+import PetDetails from './Register/Pages/PetDetails'
+import Complete from './Register/Pages/Complete'
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

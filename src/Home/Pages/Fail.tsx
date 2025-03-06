@@ -12,7 +12,7 @@ export default function Fail() {
       <View className="items-center mb-8">
         <Text className="text-2xl font-bold text-[#D8961A]">조회 실패</Text>
         <Text className="text-lg text-gray-600 mt-1">
-          조회되지 않은 반려동물입니다.
+          등록되지 않은 반려동물입니다.
         </Text>
       </View>
 
@@ -24,8 +24,9 @@ export default function Fail() {
         </View>
 
         {/* 🐶 반려동물 사진 */}
+        {/* <NoneProfile className="w-32 h-32 rounded-full" /> */}
         <Image
-          source={require('../../../assets/dogProfile.png')}
+          source={require('../../../assets/noneRegisteredProfile.png')}
           className="w-32 h-32 rounded-full"
         />
         <Text className="text-lg font-bold mt-4">강아지 (?세)</Text>
@@ -41,9 +42,7 @@ export default function Fail() {
           className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
           onPress={() => navigation.navigate('CameraScreen2')}
         >
-          <Text className="text-lg text-white font-bold">
-            외형 사진 찍으러 가기
-          </Text>
+          <Text className="text-lg text-white font-bold">유실견 신고하기</Text>
         </TouchableOpacity>
       </View>
     </View>

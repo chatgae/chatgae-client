@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -17,34 +17,33 @@ const PetProfile = ({ navigation }: any) => {
 
   // ✅ 미디어 라이브러리 권한 요청
   useEffect(() => {
-    (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
+    ;(async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (status !== 'granted') {
         Alert.alert(
-          "권한 필요",
-          "이미지 업로드를 위해 갤러리 접근 권한이 필요합니다."
-        );
+          '권한 필요',
+          '이미지 업로드를 위해 갤러리 접근 권한이 필요합니다.'
+        )
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   const pickImage = async () => {
-    console.log("📸 이미지 선택 시작");
+    console.log('📸 이미지 선택 시작')
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images, // ✅ 사진만 선택 가능
       allowsEditing: true, // ✅ 사진 편집 허용
       aspect: [1, 1], // ✅ 정사각형 비율
       quality: 1, // ✅ 최상의 화질 유지
-    });
+    })
 
-    console.log("📸 이미지 선택 결과:", result);
+    console.log('📸 이미지 선택 결과:', result)
 
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -70,7 +69,7 @@ const PetProfile = ({ navigation }: any) => {
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            <Text style={styles.highlight}>반려견의 이름</Text>과{"\n"}
+            <Text style={styles.highlight}>반려견의 이름</Text>과{'\n'}
             <Text style={styles.highlight}>프로필 이미지</Text>를 올려주세요
           </Text>
         </View>
@@ -119,7 +118,7 @@ const PetProfile = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default PetProfile;
+export default PetProfile

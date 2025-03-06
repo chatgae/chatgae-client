@@ -7,7 +7,7 @@ import { styles } from "../Styles/PetProfileStyles";
 import { noseStyles } from "../Styles/PetNoseStyles"; // 새로운 스타일
 import { usePetStore } from "../Zustand/PetStore";
 
-const MAX_IMAGES = 5;
+const MAX_IMAGES = 5
 
 const PetNose = ({ navigation }: any) => {
   const { petInfo, addNoseImage, removeNoseImage } = usePetStore();
@@ -18,10 +18,10 @@ const PetNose = ({ navigation }: any) => {
     if (petInfo.noseImages.length >= MAX_IMAGES) return;
 
     // 📌 갤러리 접근 권한 요청
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      console.log("🚫 갤러리 접근 권한이 거부됨");
-      return;
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
+      console.log('🚫 갤러리 접근 권한이 거부됨')
+      return
     }
 
     // 📌 다중 이미지 선택
@@ -30,14 +30,14 @@ const PetNose = ({ navigation }: any) => {
       allowsMultipleSelection: true, // ✅ 다중 선택 허용
       selectionLimit: MAX_IMAGES - petInfo.noseImages.length, // ✅ 남은 슬롯만큼만 선택 가능
       quality: 1,
-    });
+    })
 
-    console.log("📸 이미지 선택 응답:", result);
+    console.log('📸 이미지 선택 응답:', result)
 
     if (!result.canceled && result.assets.length > 0) {
       result.assets.forEach((asset) => addNoseImage(asset.uri));
     }
-  };
+  }
 
   const removeImage = (index: number) => {
     removeNoseImage(index);
@@ -132,7 +132,7 @@ const PetNose = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default PetNose;
+export default PetNose
