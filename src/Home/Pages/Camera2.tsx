@@ -1,5 +1,5 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   Animated,
   Button,
@@ -9,38 +9,32 @@ import {
   Image,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
 import BackArrow from '../../../assets/backArrow.svg'
 import DogBodyLine from '../../../assets/dogBodyLine.svg'
-import { useEffect } from 'react'
 
 export default function CameraScreen2() {
   const navigation = useNavigation()
-
   const [facing, setFacing] = useState<CameraType>('back')
   const [photoUri, setPhotoUri] = useState<string | null>(null)
   const [permission, requestPermission] = useCameraPermissions()
+  const [loading, setLoading] = useState(false) // ✅ 업로드 로딩 상태
   const cameraRef = useRef<CameraView | null>(null)
 
-  // ✅ Animated.Value 추가 (기본값 1 = 불투명)
+  // ✅ 툴팁 애니메이션 (3초 후 사라짐)
   const fadeAnim = useRef(new Animated.Value(1)).current
-
   useEffect(() => {
-    // 3초 후 서서히 사라지는 애니메이션 실행
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
-        toValue: 0, // 투명하게
-        duration: 1000, // 1초 동안
-        useNativeDriver: true, // 네이티브 드라이버 사용
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
       }).start()
     }, 3000)
-
     return () => clearTimeout(timer)
   }, [])
 
-  if (!permission) {
-    return <View />
-  }
-
+  if (!permission) return <View />
   if (!permission.granted) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -53,58 +47,59 @@ export default function CameraScreen2() {
   }
 
   // 🔄 카메라 전환
-  function toggleCameraFacing() {
+  const toggleCameraFacing = () => {
     setFacing((current) => (current === 'back' ? 'front' : 'back'))
   }
 
-  // 📸 사진 촬영 후 서버로 전송
+  // 📸 사진 촬영 후 업로드
   const takeAndUploadPicture = async () => {
-    if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync()
-      setPhotoUri(photo.uri)
-      console.log('사진 촬영 완료:', photo.uri)
-      console.log('사진 촬영 크기:', photo)
+    if (!cameraRef.current) return
 
-      // ✅ 로딩 화면으로 이동
-      navigation.navigate('Loading')
+    const photo = await cameraRef.current.takePictureAsync()
+    setPhotoUri(photo.uri)
+    console.log('✅ 사진 촬영 완료:', photo.uri)
 
-      // ✅ 서버로 업로드 후 결과 화면 이동
-      const result = await uploadImage(photo.uri)
+    // ✅ 로딩 화면으로 이동
+    navigation.navigate('Loading')
 
-      if (result?.success) {
-        // navigation.replace('Success', { petData: result.data }) // ✅ 성공 시 SuccessScreen 이동
-        navigation.replace('Home') // ✅ 성공 시 Home 이동
-      } else {
-        navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
-      }
+    // ✅ 서버로 업로드 후 결과 화면 이동
+    setLoading(true)
+    const result = await uploadImage(photo.uri)
+    setLoading(false)
+
+    if (result?.success) {
+      navigation.replace('Home') // ✅ 성공 시 Home 이동
+    } else {
+      navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
     }
   }
 
-  // ☁️ 서버로 이미지 업로드
+  // ☁️ axios로 이미지 업로드
   const uploadImage = async (photoUri: string) => {
     const formData = new FormData()
-    formData.append('file', {
+    formData.append('image', {
       uri: photoUri,
       name: photoUri.split('/').pop(),
       type: 'image/jpeg',
-    } as any) // ✅ `as any` 추가하여 타입 충돌 방지
+    } as any) // ✅ 타입 충돌 방지
+
+    formData.append('latitude', '33.4852455')
+    formData.append('longitude', '126.4746819')
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         'https://hare-working-cougar.ngrok-free.app/api/v1/losts',
+        formData,
         {
-          method: 'POST',
-          body: formData,
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       )
 
-      const result = await response.json()
-      console.log('Upload success:', result)
-      return 'success' // ✅ 서버 응답 반환
+      console.log('✅ 업로드 성공:', response.data)
+      return response.data // ✅ 서버 응답 반환
     } catch (error) {
-      console.error('Upload error:', error)
-      return 'success' // ✅ 실패 처리
+      console.error('❌ 업로드 실패:', error)
+      return null // ✅ 실패 시 null 반환
     }
   }
 
@@ -115,6 +110,7 @@ export default function CameraScreen2() {
         className="w-full h-full"
         facing={facing}
       >
+        {/* 🔙 뒤로 가기 버튼 */}
         <View className="absolute top-12 left-4 z-10">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -142,7 +138,7 @@ export default function CameraScreen2() {
             </Text>
           </Animated.View>
 
-          {/* 🐶 Nose SVG */}
+          {/* 🐶 Dog SVG */}
           <DogBodyLine width={300} height={300} />
         </View>
 
@@ -150,7 +146,10 @@ export default function CameraScreen2() {
         <View className="absolute bottom-14 w-full flex items-center">
           <TouchableOpacity
             onPress={takeAndUploadPicture}
-            className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300"
+            disabled={loading} // ✅ 업로드 중 버튼 비활성화
+            className={`w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300 ${
+              loading ? 'opacity-50' : ''
+            }`}
           />
         </View>
       </CameraView>
@@ -159,7 +158,7 @@ export default function CameraScreen2() {
       {/* {photoUri && (
         <Image
           source={{ uri: photoUri }}
-          className="absolute bottom-4 right-4 w-5 h-auto rounded-lg"
+          className="absolute bottom-4 right-4 w-16 h-16 rounded-lg"
         />
       )} */}
     </View>

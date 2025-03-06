@@ -12,7 +12,7 @@ export default function Fail() {
       <View className="items-center mb-8">
         <Text className="text-2xl font-bold text-[#D8961A]">조회 실패</Text>
         <Text className="text-lg text-gray-600 mt-1">
-          조회되지 않은 반려동물입니다.
+          등록되지 않은 반려동물입니다.
         </Text>
       </View>
 

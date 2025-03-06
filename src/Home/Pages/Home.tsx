@@ -74,7 +74,11 @@ export default function Home() {
       ) : error ? (
         <Text className="text-red-500">에러 발생: {error}</Text>
       ) : myPets.length > 0 ? ( // ✅ 반려가족이 있으면 슬라이드 표시
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="flex"
+        >
           <View className="flex-row space-x-4 mt-5">
             {myPets.map((pet) => (
               <View

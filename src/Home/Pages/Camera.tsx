@@ -64,7 +64,7 @@ export default function CameraScreen() {
     // ✅ 서버로 업로드 후 결과 화면 이동
     const result = await uploadImage(photo.uri)
 
-    if (result?.success) {
+    if (result?.status == 'success') {
       navigation.replace('Success') // ✅ 성공 시 SuccessScreen 이동
     } else {
       navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
@@ -101,7 +101,7 @@ export default function CameraScreen() {
       } as any) // ✅ `as any` 추가하여 타입 충돌 방지
 
       const response = await axios.post(
-        'https://hare-working-cougar.ngrok-free.app/api/v1/pets/',
+        'https://hare-working-cougar.ngrok-free.app/api/v1/pets/identify',
         formData,
         {
           headers: {
