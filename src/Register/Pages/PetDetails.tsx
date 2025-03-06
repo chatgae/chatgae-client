@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+// 4
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -133,25 +134,25 @@ const PetDetails = ({ navigation }: any) => {
 
       console.log('📩 [응답 수신]:', response.status, result)
 
-      if (response.status === 404 && result.status === 'success') {
+      if (response.status === 404 && result.status === "success") {
         // ✅ 기존에 등록된 강아지일 경우
         Alert.alert(
-          '⚠️ 이미 등록된 반려견',
-          '이 반려견은 이미 등록되어 있습니다.'
-        )
-        navigation.replace('HomeMain') // ✅ 메인 페이지로 이동
-      } else if (result.status === 'success') {
+          "⚠️ 이미 등록된 반려견",
+          "이 반려견은 이미 등록되어 있습니다."
+        );
+        navigation.replace("HomeMain"); // ✅ 메인 페이지로 이동
+      } else if (result.status === "success") {
         // ✅ 새로 등록된 경우
-        Alert.alert('🎉 등록 완료', '반려견 등록이 성공적으로 완료되었습니다.')
-        resetPetInfo()
-        setRegisterPet(result.data.pet)
-        navigation.replace('Complete') // ✅ 등록 완료 화면으로 이동
+        Alert.alert("🎉 등록 완료", "반려견 등록이 성공적으로 완료되었습니다.");
+        resetPetInfo();
+        setRegisterPet(result.data.pet);
+        navigation.replace("Complete"); // ✅ 등록 완료 화면으로 이동
       } else {
         // ❌ 다른 실패 응답 처리
-        console.error(`❌ 요청 실패! 상태 코드: ${response.status}`)
-        Alert.alert('❌ 등록 실패', '다시 시도해 주세요.')
-        navigation.replace('PetDetails')
-        throw new Error('등록 실패')
+        console.error(`❌ 요청 실패! 상태 코드: ${response.status}`);
+        Alert.alert("❌ 등록 실패", "다시 시도해 주세요.");
+        navigation.replace("PetDetails");
+        throw new Error("등록 실패");
       }
     } catch (error) {
       console.error('❌ 반려견 등록 오류:', error)
