@@ -4,14 +4,9 @@
     "slug": "chatgae-client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/splashIcon.svg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FAF0C6"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.zention",
@@ -21,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/splashIcon.svg",
         "backgroundColor": "#FAF0C6"
       },
       "package": "com.zention",
@@ -32,7 +27,7 @@
       "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/logo.png"
+      "favicon": "./assets/splashIcon.svg"
     },
     "plugins": [
       [
