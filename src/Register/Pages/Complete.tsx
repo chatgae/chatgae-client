@@ -1,4 +1,3 @@
-// 5
 import React from "react";
 import {
   View,
@@ -7,14 +6,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
-//import LottieView from "lottie-react-native"; // 🎆 Lottie 애니메이션 추가
 import { styles } from "../Styles/PetProfileStyles"; // 기존 스타일 재사용
 import { completeStyles } from "../Styles/CompleteStyles"; // 새로운 스타일
 import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
-//import fireworks from "../../../assets/fireworks.json";
 import Icon from "react-native-vector-icons/Feather";
 import Congrats from "../Components/Congrats";
 import { RootStackParamList } from "../../App";
+import { usePetStore } from "../Zustand/PetStore";
 
 // ✅ RouteProp을 이용하여 route.params의 타입을 명확히 지정
 type CompleteScreenRouteProp = RouteProp<RootStackParamList, "Complete">;
@@ -22,11 +20,15 @@ type CompleteScreenRouteProp = RouteProp<RootStackParamList, "Complete">;
 const Complete = () => {
   const route = useRoute<CompleteScreenRouteProp>();
   const navigation = useNavigation();
+  const { petData } = usePetStore();
+
+  const profileImg =
+    petData.profile || require("../../../assets/noneRegisteredProfile.png");
 
   // ✅ `route.params`에서 반려견 정보 가져오기
-  const petInfo = route.params?.petInfo;
+  // const petInfo = route.params?.petInfo;
 
-  if (!petInfo) {
+  if (!petData) {
     return (
       <View className="flex-1 justify-center items-center">
         <Text>반려견 정보를 불러올 수 없습니다.</Text>
@@ -44,7 +46,7 @@ const Complete = () => {
       {/* 📌 콘텐츠 컨테이너 (반려견 카드 중앙 정렬) */}
       <View style={completeStyles.contentContainer}>
         {/* 🎉 축하 메시지 */}
-        <View className="items-center mb-20">
+        <View className="items-center mb-8">
           <Text className="text-2xl font-bold text-[#D8961A]">축하드려요!</Text>
           <Text className="text-lg text-gray-600 mt-1">
             등록이 완료되었어요.
@@ -57,14 +59,16 @@ const Complete = () => {
             <Icon name="check-circle" size={50} color="#426CB4" />
           </View>
           <Image
-            source={{ uri: petInfo.profile }}
+            source={{
+              uri: profileImg,
+            }}
             style={completeStyles.petImage}
           />
           <Text className="text-lg font-bold mt-4">
-            {petInfo.nickname} ({petInfo.age}세)
+            {petData.nickname} ({petData.age}세)
           </Text>
           <Text className="text-gray-500 mt-2">
-            {petInfo.breed} - {petInfo.gender === "M" ? "남아" : "여아"}
+            {petData.breed} - {petData.gender === "M" ? "남아" : "여아"}
           </Text>
         </View>
       </View>
@@ -73,13 +77,13 @@ const Complete = () => {
       <View className="absolute bottom-10 w-full px-6">
         <TouchableOpacity
           className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
-          onPress={() => navigation.navigate('HomeMain')}
+          onPress={() => navigation.navigate("HomeMain")}
         >
           <Text className="text-lg text-white font-bold">찾개 시작하기</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Complete
+export default Complete;

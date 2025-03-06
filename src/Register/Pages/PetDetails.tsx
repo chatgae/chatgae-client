@@ -1,5 +1,5 @@
 // 4
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -19,7 +19,8 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 const API_URL = "https://hare-working-cougar.ngrok-free.app/api/v1/pets/";
 
 const PetDetails = ({ navigation }: any) => {
-  const { petInfo, setGender, setBirthDate, resetPetInfo } = usePetStore();
+  const { petInfo, setGender, setBirthDate, resetPetInfo, setRegisterPet } =
+    usePetStore();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const nav = useNavigation<NavigationProp<RootStackParamList>>();
@@ -118,20 +119,32 @@ const PetDetails = ({ navigation }: any) => {
         body: formData,
       });
 
+      // const result: {
+      //   status: string;
+      //   data: {
+      //     petName: string;
+      //     profileImage: string;
+      //     breed: string;
+      //     gender: string;
+      //     age: number;
+      //   };
+      // } = await response.json();
+
       const result = await response.json();
 
       console.log("📩 [응답 수신]:", response.status, result);
 
-      if (response.ok) {
-        const petId = result.id;
+      if (result.status === "success") {
         Alert.alert("🎉 등록 완료", "반려견 등록이 성공적으로 완료되었습니다.");
         resetPetInfo();
-        navigation.replace("Complete", { petInfo: result.data });
+        setRegisterPet(result.data.pet);
+        // navigation.replace("Complete", { petInfo: result.data });
+        navigation.replace("Complete");
       } else {
         console.error(`❌ 요청 실패! 상태 코드: ${response.status}`);
-        Alert.alert("❌ 등록 실패", result.message || "다시 시도해 주세요.");
+        Alert.alert("❌ 등록 실패", "다시 시도해 주세요.");
         navigation.replace("PetDetails");
-        throw new Error(result.message || "등록 실패");
+        throw new Error("등록 실패");
       }
     } catch (error) {
       console.error("❌ 반려견 등록 오류:", error);
@@ -263,7 +276,7 @@ const PetDetails = ({ navigation }: any) => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
-export default PetDetails
+export default PetDetails;
