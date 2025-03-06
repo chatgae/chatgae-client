@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "react-native-vector-icons/Feather";
-import { styles } from "../styles/PetProfileStyles";
-import { noseStyles } from "../styles/PetNoseStyles"; // 새로운 스타일
+import { styles } from "../Styles/PetProfileStyles";
+import { noseStyles } from "../Styles/PetNoseStyles"; // 새로운 스타일
 
 const MAX_IMAGES = 5;
 
