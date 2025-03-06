@@ -1,33 +1,146 @@
 // 4
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Modal,
   Pressable,
-  Platform,
-} from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { styles } from '../styles/PetProfileStyles' // 기존 스타일 재사용
-import { detailsStyles } from '../styles/PetDetailsStyles' // 새로운 스타일
-import Icon from 'react-native-vector-icons/Feather'
+  Alert,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { styles } from "../Styles/PetProfileStyles"; // 기존 스타일 재사용
+import { detailsStyles } from "../Styles/PetDetailsStyles"; // 새로운 스타일
+import { usePetStore } from "../Zustand/PetStore";
+import { RootStackParamList } from "../../App";
+import Icon from "react-native-vector-icons/Feather";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+
+const API_URL = "https://hare-working-cougar.ngrok-free.app/api/v1/pets/";
 
 const PetDetails = ({ navigation }: any) => {
-  const [selectedGender, setSelectedGender] = useState<string | null>(null)
-  const [date, setDate] = useState<Date | null>(null) // 초기값을 null로 설정
-  const [showDatePicker, setShowDatePicker] = useState(false)
+  const { petInfo, setGender, setBirthDate, resetPetInfo } = usePetStore();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const nav = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleGenderSelect = (gender: string) => {
-    setSelectedGender(gender)
-  }
+    setGender(gender);
+  };
 
   const handleConfirmDate = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
-      setDate(selectedDate)
+      const formattedDate = selectedDate.toISOString().split("T")[0];
+      setBirthDate(formattedDate);
     }
-    setShowDatePicker(false) // 모달 닫기
-  }
+    setShowDatePicker(false); // 모달 닫기
+  };
+
+  // ✅ 생년월일로 나이 계산하는 함수
+  const calculateAge = (birthDate: string): number => {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+
+    // 생일이 안 지났으면 -1 처리
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+
+    return age < 0 ? 0 : age; // 나이는 0보다 작을 수 없음
+  };
+
+  // ✅ 반려견 정보 백엔드에 전송하는 함수
+  const handleSubmit = async () => {
+    if (
+      !petInfo.petName ||
+      !petInfo.profileImage ||
+      !petInfo.noseImages.length ||
+      !petInfo.breed ||
+      !petInfo.gender ||
+      !petInfo.birthDate
+    ) {
+      Alert.alert("⚠️ 모든 정보를 입력해주세요.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+
+    try {
+      // ✅ 프로필 이미지 추가
+      const profileImageUri = petInfo.profileImage;
+      const profileImageName = profileImageUri.split("/").pop();
+      formData.append("profileImage", {
+        uri: profileImageUri,
+        name: profileImageName,
+        type: "image/jpeg",
+      } as any);
+
+      // ✅ 비문 이미지들 추가
+      petInfo.noseImages.forEach((uri, index) => {
+        const imageName = uri.split("/").pop();
+        formData.append("noseImages", {
+          uri,
+          name: imageName,
+          type: "image/jpeg",
+        } as any);
+      });
+
+      const petAge = calculateAge(petInfo.birthDate);
+
+      // ✅ JSON 데이터 추가 (반려견 정보)
+      const petData = {
+        nickname: petInfo.petName,
+        breed: petInfo.breed,
+        gender: petInfo.gender,
+        birthday: petInfo.birthDate,
+        age: petAge,
+      };
+      formData.append("pet", JSON.stringify(petData));
+
+      console.log("📤 [POST 요청] 보낼 데이터:");
+
+      navigation.navigate("Loading", { mode: "등록" });
+
+      // ✅ API 요청
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      console.log("📩 [응답 수신]:", response.status, result);
+
+      if (response.ok) {
+        const petId = result.id;
+        Alert.alert("🎉 등록 완료", "반려견 등록이 성공적으로 완료되었습니다.");
+        resetPetInfo();
+        navigation.replace("Complete", { petInfo: result.data });
+      } else {
+        console.error(`❌ 요청 실패! 상태 코드: ${response.status}`);
+        Alert.alert("❌ 등록 실패", result.message || "다시 시도해 주세요.");
+        navigation.replace("PetDetails");
+        throw new Error(result.message || "등록 실패");
+      }
+    } catch (error) {
+      console.error("❌ 반려견 등록 오류:", error);
+      Alert.alert("❌ 등록 실패", "다시 시도해 주세요.");
+      navigation.replace("PetDetails");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -63,14 +176,14 @@ const PetDetails = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             detailsStyles.genderButton,
-            selectedGender === '남자' && detailsStyles.selectedGender,
+            petInfo.gender === "M" && detailsStyles.selectedGender,
           ]}
-          onPress={() => handleGenderSelect('남자')}
+          onPress={() => usePetStore.getState().setGender("M")}
         >
           <Text
             style={[
               detailsStyles.genderText,
-              selectedGender === '남자' && detailsStyles.selectedText,
+              petInfo.gender === "M" && detailsStyles.selectedText,
             ]}
           >
             남자
@@ -79,14 +192,14 @@ const PetDetails = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             detailsStyles.genderButton,
-            selectedGender === '여자' && detailsStyles.selectedGender,
+            petInfo.gender === "F" && detailsStyles.selectedGender,
           ]}
-          onPress={() => handleGenderSelect('여자')}
+          onPress={() => usePetStore.getState().setGender("F")}
         >
           <Text
             style={[
               detailsStyles.genderText,
-              selectedGender === '여자' && detailsStyles.selectedText,
+              petInfo.gender === "F" && detailsStyles.selectedText,
             ]}
           >
             여자
@@ -103,10 +216,10 @@ const PetDetails = ({ navigation }: any) => {
         <Text
           style={[
             detailsStyles.dateText,
-            !date && detailsStyles.placeholderText,
+            !petInfo.birthDate && detailsStyles.placeholderText,
           ]}
         >
-          {date ? date.toISOString().split('T')[0] : '날짜를 선택해주세요'}
+          {petInfo.birthDate ? petInfo.birthDate : "날짜를 선택해주세요"}
         </Text>
         <Icon name="calendar" size={20} color="#5A3E24" />
       </TouchableOpacity>
@@ -116,15 +229,11 @@ const PetDetails = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             styles.nextButton,
-            (!selectedGender || !date) && styles.disabledButton,
+            (!petInfo.gender || !petInfo.birthDate || isSubmitting) &&
+              styles.disabledButton,
           ]}
-          onPress={() =>
-            navigation.navigate('Complete', {
-              selectedGender,
-              birthDate: date,
-            })
-          }
-          disabled={!selectedGender || !date}
+          onPress={handleSubmit}
+          disabled={!petInfo.gender || !petInfo.birthDate || isSubmitting}
         >
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
@@ -138,7 +247,7 @@ const PetDetails = ({ navigation }: any) => {
         />
         <View style={detailsStyles.modalContainer}>
           <DateTimePicker
-            value={date ?? new Date()} // null 방지
+            value={petInfo.birthDate ? new Date(petInfo.birthDate) : new Date()} // null 방지
             mode="date"
             display="spinner" // 휠 방식 강제 적용
             locale="ko-KR"

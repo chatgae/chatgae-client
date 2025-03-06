@@ -6,14 +6,14 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-} from 'react-native'
-import * as ImagePicker from 'expo-image-picker' // ✅ expo-image-picker import
-import Icon from 'react-native-vector-icons/Feather'
-import { styles } from '../styles/PetProfileStyles'
+} from "react-native";
+import * as ImagePicker from "expo-image-picker"; // ✅ expo-image-picker import
+import Icon from "react-native-vector-icons/Feather";
+import { styles } from "../Styles/PetProfileStyles";
+import { usePetStore } from "../Zustand/PetStore";
 
 const PetProfile = ({ navigation }: any) => {
-  const [petName, setPetName] = useState<string | undefined>(undefined)
-  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const { petInfo, setPetName, setProfileImage } = usePetStore();
 
   // ✅ 미디어 라이브러리 권한 요청
   useEffect(() => {
@@ -41,8 +41,7 @@ const PetProfile = ({ navigation }: any) => {
     console.log('📸 이미지 선택 결과:', result)
 
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri)
-      console.log('✅ 선택된 이미지:', result.assets[0].uri)
+      setProfileImage(result.assets[0].uri);
     }
   }
 
@@ -77,8 +76,11 @@ const PetProfile = ({ navigation }: any) => {
 
         {/* 📷 이미지 업로드 버튼 */}
         <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-          {profileImage ? (
-            <Image source={{ uri: profileImage }} style={styles.image} />
+          {petInfo.profileImage ? (
+            <Image
+              source={{ uri: petInfo.profileImage }}
+              style={styles.image}
+            />
           ) : (
             <>
               <Icon name="camera" size={24} color="#EFC655" />
@@ -93,7 +95,7 @@ const PetProfile = ({ navigation }: any) => {
           style={styles.input}
           placeholder="이름을 입력해주세요"
           placeholderTextColor="#BDBDBD"
-          value={petName}
+          value={petInfo.petName ?? ""}
           onChangeText={setPetName}
         />
       </View>
@@ -103,14 +105,14 @@ const PetProfile = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             styles.nextButton,
-            !(petName && profileImage) && styles.disabledButton,
+            !(petInfo.petName && petInfo.profileImage) && styles.disabledButton,
           ]}
           onPress={() =>
-            petName &&
-            profileImage &&
-            navigation.navigate('PetNose', { petName, profileImage })
+            petInfo.petName &&
+            petInfo.profileImage &&
+            navigation.navigate("PetNose")
           }
-          disabled={!(petName && profileImage)}
+          disabled={!(petInfo.petName && petInfo.profileImage)}
         >
           <Text style={styles.buttonText}>다음</Text>
         </TouchableOpacity>
