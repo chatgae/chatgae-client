@@ -1,3 +1,4 @@
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useEffect, useRef, useState } from 'react'
 import {
   Animated,
@@ -7,20 +8,18 @@ import {
   View,
   Image,
 } from 'react-native'
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import axios from 'axios'
 import BackArrow from '../../../assets/backArrow.svg'
 import Nose from '../../../assets/nose.svg'
-import axios from 'axios'
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../App";
+import { RootStackParamList } from '../../App'
 
 export default function CameraScreen() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const [facing, setFacing] = useState<CameraType>("back");
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef<CameraView | null>(null);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+  const [facing, setFacing] = useState<CameraType>('back')
+  const [photoUri, setPhotoUri] = useState<string | null>(null)
+  const [permission, requestPermission] = useCameraPermissions()
+  const cameraRef = useRef<CameraView | null>(null)
 
   // ✅ 애니메이션 효과 (툴팁)
   const fadeAnim = useRef(new Animated.Value(1)).current
@@ -33,14 +32,10 @@ export default function CameraScreen() {
         useNativeDriver: true,
       }).start()
     }, 3000)
-
     return () => clearTimeout(timer)
   }, [])
 
   if (!permission) return <View />
-  if (!permission) {
-    return <View />;
-  }
 
   if (!permission.granted) {
     return (
@@ -50,7 +45,7 @@ export default function CameraScreen() {
         </Text>
         <Button onPress={requestPermission} title="Grant Permission" />
       </View>
-    );
+    )
   }
 
   // 📸 사진 촬영 후 서버로 전송
@@ -59,50 +54,22 @@ export default function CameraScreen() {
 
     const photo = await cameraRef.current.takePictureAsync()
     setPhotoUri(photo.uri)
-
     console.log('✅ 사진 촬영 완료:', photo.uri)
 
-      // ✅ 로딩 화면으로 이동
-      navigation.navigate("Loading", { mode: "조회" });
+    // ✅ 로딩 화면으로 이동
+    navigation.navigate('Loading', { mode: '조회' })
 
     // ✅ 서버로 업로드 후 결과 화면 이동
     const result = await uploadImage(photo.uri)
 
-
-    if (result?.status == 'success') {
+    if (result?.status === 'success') {
       navigation.replace('Success') // ✅ 성공 시 SuccessScreen 이동
     } else {
       navigation.replace('Fail') // ✅ 실패 시 FailScreen 이동
     }
   }
-      if (result?.success) {
-        // navigation.replace('Success', { petData: result.data }) // ✅ 성공 시 SuccessScreen 이동
-        navigation.replace("Success"); // ✅ 성공 시 SuccessScreen 이동
-      } else {
-        navigation.replace("Fail"); // ✅ 실패 시 FailScreen 이동
-      }
-    }
 
   // ☁️ axios로 이미지 업로드
-  // const uploadImage = async (photoUri: string) => {
-  //   try {
-  //     const response = await axios.post(
-  //       'https://hare-working-cougar.ngrok-free.app/api/v1/pets/identify',
-  //       photoUri,
-  //       {
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //         },
-  //       }
-  //     )
-
-  //     console.log('✅ 업로드 성공:', response.data)
-  //     return response.data // ✅ 서버 응답 반환
-  //   } catch (error) {
-  //     console.error('❌ 업로드 실패:', error)
-  //     return null // ✅ 실패 시 null 반환
-  //   }
-  // }
   const uploadImage = async (photoUri: string) => {
     try {
       const formData = new FormData()
@@ -128,7 +95,7 @@ export default function CameraScreen() {
       console.error('❌ 업로드 실패:', error)
       return null // ✅ 실패 시 null 반환
     }
-  };
+  }
 
   return (
     <View className="flex-1 justify-center items-center">
@@ -185,5 +152,5 @@ export default function CameraScreen() {
         />
       )} */}
     </View>
-  );
+  )
 }

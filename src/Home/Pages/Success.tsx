@@ -10,19 +10,11 @@ export default function Success() {
 
   return (
     <View className="flex-1 bg-white px-6 justify-center items-center">
-      {/* 뒤로 가기 버튼 */}
-      {/* <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className="absolute top-10 left-4"
-      >
-        <Text className="text-lg">⬅️</Text>
-      </TouchableOpacity> */}
-
       {/* 조회 성공 메시지 */}
-      <View className="absolute top-0 left-0 w-full h-[300px] items-center mb-8">
+      <View className="items-center mb-8">
         <Text className="text-2xl font-bold text-[#D8961A]">조회 성공</Text>
         <Text className="text-lg text-gray-600 mt-1">
-          등록된 반려동물입니다.
+          등록된 않은 반려동물입니다.
         </Text>
       </View>
 
