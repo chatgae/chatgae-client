@@ -6,6 +6,7 @@ import { styles } from '../styles/PetProfileStyles' // 기존 스타일 재사�
 import { completeStyles } from '../styles/CompleteStyles' // 새로운 스타일
 //import fireworks from "../../../assets/fireworks.json";
 import Icon from 'react-native-vector-icons/Feather'
+import Congrats from '../Components/Congrats'
 
 const Complete = ({ navigation }: any) => {
   const petInfo = {
@@ -27,6 +28,10 @@ const Complete = ({ navigation }: any) => {
         style={completeStyles.fireworks}
       /> */}
 
+      <View className="absolute top-0 left-0 w-full h-[300px] items-center justify-center">
+        <Congrats />
+      </View>
+
       {/* 🔙 뒤로 가기 버튼 */}
       <TouchableOpacity
         style={styles.backButton}
@@ -38,9 +43,11 @@ const Complete = ({ navigation }: any) => {
       {/* 📌 콘텐츠 컨테이너 (반려견 카드 중앙 정렬) */}
       <View style={completeStyles.contentContainer}>
         {/* 🎉 축하 메시지 */}
-        <View style={completeStyles.messageContainer}>
-          <Text style={completeStyles.congratsText}>축하드려요!</Text>
-          <Text style={completeStyles.subtitle}>등록이 완료되었어요.</Text>
+        <View className="items-center mb-8">
+          <Text className="text-2xl font-bold text-[#D8961A]">축하드려요!</Text>
+          <Text className="text-lg text-gray-600 mt-1">
+            등록이 완료되었어요.
+          </Text>
         </View>
 
         {/* 🐶 반려견 카드 */}
@@ -52,22 +59,30 @@ const Complete = ({ navigation }: any) => {
             source={{ uri: petInfo.image }}
             style={completeStyles.petImage}
           />
-          <Text style={completeStyles.petName}>
+          <Text className="text-lg font-bold mt-4">
             {petInfo.name} ({petInfo.age}세)
           </Text>
-          <Text style={completeStyles.petDetails}>
+          <Text className="text-gray-500 mt-2">
             {petInfo.breed} - {petInfo.gender}
           </Text>
         </View>
       </View>
 
       {/* ▶️ 앱 시작하기 버튼 */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={completeStyles.startButton}
         onPress={() => navigation.navigate('HomeMain')} // 홈으로 이동
       >
         <Text style={completeStyles.buttonText}>찾개 시작하기</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View className="absolute bottom-10 w-full px-6">
+        <TouchableOpacity
+          className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
+          onPress={() => navigation.navigate('HomeMain')}
+        >
+          <Text className="text-lg text-white font-bold">찾개 시작하기</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }

@@ -1,3 +1,4 @@
+// TODO: 개선해야 함
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useState, useRef } from 'react'
 import { Button, Text, TouchableOpacity, View, Image } from 'react-native'
