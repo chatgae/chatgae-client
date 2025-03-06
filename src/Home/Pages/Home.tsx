@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,47 +7,81 @@ import {
   ActivityIndicator,
   ScrollView,
   FlatList,
-} from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import AlarmIcon from '../../../assets/alarm.svg'
-import { usePetStore } from '../Stores/UsePetStore'
-import GetPets from '../Hooks/GetPets'
-import { useLostDogsStore } from '../Stores/UseLastPetStore'
-import GetLastPets from '../Hooks/GetLastPets'
+  RefreshControl,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AlarmIcon from "../../../assets/alarm.svg";
+import { usePetStore } from "../Stores/UsePetStore";
+import GetPets from "../Hooks/GetPets";
+import { useLostDogsStore } from "../Stores/UseLastPetStore";
+import GetLastPets from "../Hooks/GetLastPets";
 
 export default function Home() {
-  const navigation = useNavigation()
-  const { lostDogs } = useLostDogsStore()
-  const { myPets } = usePetStore()
-  const { loading, error } = GetPets()
-  GetLastPets()
+  const navigation = useNavigation();
+  const { lostDogs, setLostDogs } = useLostDogsStore();
+  const { myPets, setMyPets } = usePetStore();
+  const { loading, error, refetch } = GetPets(); // ✅ 반려가족 API
+  const { lastLoading, lastRefetch } = GetLastPets(); // ✅ 유실견 API 추가
+
+  // ✅ 전체 로딩 상태 (반려가족 + 유실견)
+  const allLoading = loading || lastLoading;
 
   // ✅ 자동 슬라이드 기능
-  const flatListRef = useRef<FlatList>(null)
-  const scrollIndex = useRef(0)
+  const flatListRef = useRef<FlatList>(null);
+  const scrollIndex = useRef(0);
 
   useEffect(() => {
     if (lostDogs.length > 1) {
       const interval = setInterval(() => {
         if (flatListRef.current) {
-          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length
+          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length;
           flatListRef.current.scrollToIndex({
             index: scrollIndex.current,
             animated: true,
-          })
+          });
         }
-      }, 3000) // 3초마다 슬라이드
+      }, 3000); // 3초마다 슬라이드
 
-      return () => clearInterval(interval)
+      return () => clearInterval(interval);
     }
-  }, [lostDogs])
+  }, [lostDogs]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchAllData = async () => {
+    setRefreshing(true);
+    console.log("🔄 새로고침 시작");
+
+    try {
+      await refetch();
+      console.log("✅ 반려가족 정보 갱신 완료");
+
+      await lastRefetch();
+      console.log("✅ 유실견 정보 갱신 완료");
+    } catch (error) {
+      console.error("❌ 새로고침 중 오류 발생:", error);
+    } finally {
+      setRefreshing(false);
+      console.log("✅ 새로고침 완료");
+    }
+  };
+
+  // ✅ Pull-to-Refresh 동작
+  const onRefresh = useCallback(() => {
+    fetchAllData();
+  }, []);
 
   return (
-    <View className="flex-1 bg-white px-4 pt-12">
+    <ScrollView
+      className="flex-1 bg-white px-4 pt-12"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {/* 헤더 */}
       <View className="flex-row justify-between items-center mb-4">
         <Image
-          source={require('../../../assets/logo.png')}
+          source={require("../../../assets/logo.png")}
           className="w-16 h-8"
         />
         <TouchableOpacity>
@@ -55,23 +89,25 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
+      {/* ✅ 전체 로딩 표시 (로딩 상태가 하나만 나오도록 설정) */}
+      {allLoading && (
+        <ActivityIndicator size="large" color="#EAB439" className="my-4" />
+      )}
+
       {/* 반려가족 섹션 */}
-      <View className="flex flex-row  justify-between">
+      <View className="flex flex-row justify-between">
         <Text className="text-xl font-bold">나의 반려가족</Text>
-        {/* ✅ 반려가족이 있어도 등록하기 버튼을 유지 */}
-        {myPets.length != 0 && (
+        {myPets.length !== 0 && (
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate('PetProfile')}
+            onPress={() => navigation.navigate("PetProfile")}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
         )}
       </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#EAB439" className="my-4" />
-      ) : error ? (
+      {error ? (
         <Text className="text-red-500">에러 발생: {error}</Text>
       ) : myPets.length > 0 ? ( // ✅ 반려가족이 있으면 슬라이드 표시
         <ScrollView
@@ -103,7 +139,6 @@ export default function Home() {
           </View>
         </ScrollView>
       ) : (
-        // ✅ 반려가족이 없으면 등록 안내 카드 표시
         <View className="bg-gray-100 rounded-lg p-4 shadow-sm mb-6 mt-4">
           <Text className="text-gray-700 text-center mb-1">
             등록되어있는
@@ -115,7 +150,7 @@ export default function Home() {
           </Text>
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate('PetProfile')}
+            onPress={() => navigation.navigate("PetProfile")}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
@@ -124,9 +159,9 @@ export default function Home() {
 
       {/* 유실견 신고 버튼 */}
       <TouchableOpacity
-        className="bg-[#EAB439] rounded-lg py-4 px-6 flex-row items-center justify-center shadow-md"
+        className="bg-[#EAB439] rounded-lg py-4 px-6 flex-row items-center justify-center shadow-md mt-10"
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('비문카메라')}
+        onPress={() => navigation.navigate("비문카메라")}
       >
         <Text className="text-white font-bold text-lg">
           유기견을 발견했어요
@@ -166,6 +201,6 @@ export default function Home() {
           )}
         />
       )}
-    </View>
-  )
+    </ScrollView>
+  );
 }
