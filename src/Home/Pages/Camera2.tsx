@@ -54,7 +54,7 @@ export default function App() {
     }
   }
 
-  // ☁️ 서버로 이미지 업로드
+  // ☁️ TODO: 서버로 이미지 업로드
   const uploadImage = async (photoUri: string) => {
     const formData = new FormData()
     formData.append('image', {
