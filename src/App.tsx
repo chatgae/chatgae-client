@@ -14,49 +14,36 @@ import Success from './Home/Pages/Success'
 import Fail from './Home/Pages/Fail'
 import LoadingScreen from './Loading'
 import NavBar from './Common/NavBar'
+import PetProfile from './Register/Pages/PetProfile'
+import PetNose from './Register/Pages/PetNose'
+import PetBreed from './Register/Pages/PetBreed'
+import PetDetails from './Register/Pages/PetDetails'
+import Complete from './Register/Pages/Complete'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
-// ✅ HomeStack 내부에서 특정 화면에서는 NavBar를 숨김
-function HomeStack() {
+// ✅ 반려견 등록 과정 (RegisterStack)
+function RegisterStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeMain" component={Home} />
-      <Stack.Screen name="비문카메라" component={CameraScreen} />
-      <Stack.Screen name="CameraScreen2" component={CameraScreen2} />
-      <Stack.Screen name="KakaoMap" component={KakaoMap} />
-      <Stack.Screen name="Success" component={Success} />
-      <Stack.Screen name="Fail" component={Fail} />
+      <Stack.Screen name="PetProfile" component={PetProfile} />
+      <Stack.Screen name="PetNose" component={PetNose} />
+      <Stack.Screen name="PetBreed" component={PetBreed} />
+      <Stack.Screen name="PetDetails" component={PetDetails} />
+      <Stack.Screen name="Complete" component={Complete} />
     </Stack.Navigator>
   )
 }
 
-// ✅ MainTab (NavBar가 표시되는 화면)
-function MainTab({ navigation, route }) {
-  // 📌 숨겨야 하는 화면 리스트
-  const hiddenScreens = [
-    '비문카메라',
-    'CameraScreen2',
-    'KakaoMap',
-    'Success',
-    'Fail',
-  ]
-
-  // 📌 현재 활성화된 화면 이름 가져오기
-  const routeName = route.state?.routes[route.state.index]?.name
-
+// ✅ MainTab (NavBar가 필요한 화면만 포함)
+function MainTab() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: hiddenScreens.includes(routeName)
-          ? { display: 'none' } // ✅ 숨겨야 하는 화면이면 NavBar 숨김
-          : {}, // ✅ 기본 상태 (보이도록 설정)
-      }}
+      screenOptions={{ headerShown: false }}
       tabBar={(props) => <NavBar {...props} />}
     >
-      <Tab.Screen name="홈" component={HomeStack} />
+      <Tab.Screen name="홈" component={Home} />
       <Tab.Screen name="커뮤니티" component={CommunityScreen} />
       <Tab.Screen name="건강" component={MedicalScreen} />
       <Tab.Screen name="마이페이지" component={MyPageScreen} />
@@ -72,6 +59,18 @@ export default function App() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Main" component={MainTab} />
+        <Stack.Screen name="Register" component={RegisterStack} />
+        <Stack.Screen name="HomeMain" component={MainTab} />
+        <Stack.Screen name="비문카메라" component={CameraScreen} />
+        <Stack.Screen name="CameraScreen2" component={CameraScreen2} />
+        <Stack.Screen name="KakaoMap" component={KakaoMap} />
+        <Stack.Screen name="Success" component={Success} />
+        <Stack.Screen name="Fail" component={Fail} />
+        <Stack.Screen name="PetProfile" component={PetProfile} />
+        <Stack.Screen name="PetNose" component={PetNose} />
+        <Stack.Screen name="PetBreed" component={PetBreed} />
+        <Stack.Screen name="PetDetails" component={PetDetails} />
+        <Stack.Screen name="Complete" component={Complete} />
       </Stack.Navigator>
     </NavigationContainer>
   )

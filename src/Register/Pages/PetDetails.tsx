@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// 4
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -6,27 +7,27 @@ import {
   Modal,
   Pressable,
   Platform,
-} from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { styles } from "../styles/PetProfileStyles"; // 기존 스타일 재사용
-import { detailsStyles } from "../styles/PetDetailsStyles"; // 새로운 스타일
-import Icon from "react-native-vector-icons/Feather";
+} from 'react-native'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { styles } from '../styles/PetProfileStyles' // 기존 스타일 재사용
+import { detailsStyles } from '../styles/PetDetailsStyles' // 새로운 스타일
+import Icon from 'react-native-vector-icons/Feather'
 
 const PetDetails = ({ navigation }: any) => {
-  const [selectedGender, setSelectedGender] = useState<string | null>(null);
-  const [date, setDate] = useState<Date | null>(null); // 초기값을 null로 설정
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedGender, setSelectedGender] = useState<string | null>(null)
+  const [date, setDate] = useState<Date | null>(null) // 초기값을 null로 설정
+  const [showDatePicker, setShowDatePicker] = useState(false)
 
   const handleGenderSelect = (gender: string) => {
-    setSelectedGender(gender);
-  };
+    setSelectedGender(gender)
+  }
 
   const handleConfirmDate = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
-      setDate(selectedDate);
+      setDate(selectedDate)
     }
-    setShowDatePicker(false); // 모달 닫기
-  };
+    setShowDatePicker(false) // 모달 닫기
+  }
 
   return (
     <View style={styles.container}>
@@ -62,14 +63,14 @@ const PetDetails = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             detailsStyles.genderButton,
-            selectedGender === "남자" && detailsStyles.selectedGender,
+            selectedGender === '남자' && detailsStyles.selectedGender,
           ]}
-          onPress={() => handleGenderSelect("남자")}
+          onPress={() => handleGenderSelect('남자')}
         >
           <Text
             style={[
               detailsStyles.genderText,
-              selectedGender === "남자" && detailsStyles.selectedText,
+              selectedGender === '남자' && detailsStyles.selectedText,
             ]}
           >
             남자
@@ -78,14 +79,14 @@ const PetDetails = ({ navigation }: any) => {
         <TouchableOpacity
           style={[
             detailsStyles.genderButton,
-            selectedGender === "여자" && detailsStyles.selectedGender,
+            selectedGender === '여자' && detailsStyles.selectedGender,
           ]}
-          onPress={() => handleGenderSelect("여자")}
+          onPress={() => handleGenderSelect('여자')}
         >
           <Text
             style={[
               detailsStyles.genderText,
-              selectedGender === "여자" && detailsStyles.selectedText,
+              selectedGender === '여자' && detailsStyles.selectedText,
             ]}
           >
             여자
@@ -105,7 +106,7 @@ const PetDetails = ({ navigation }: any) => {
             !date && detailsStyles.placeholderText,
           ]}
         >
-          {date ? date.toISOString().split("T")[0] : "날짜를 선택해주세요"}
+          {date ? date.toISOString().split('T')[0] : '날짜를 선택해주세요'}
         </Text>
         <Icon name="calendar" size={20} color="#5A3E24" />
       </TouchableOpacity>
@@ -118,7 +119,7 @@ const PetDetails = ({ navigation }: any) => {
             (!selectedGender || !date) && styles.disabledButton,
           ]}
           onPress={() =>
-            navigation.navigate("PetSummary", {
+            navigation.navigate('Complete', {
               selectedGender,
               birthDate: date,
             })
@@ -153,7 +154,7 @@ const PetDetails = ({ navigation }: any) => {
         </View>
       </Modal>
     </View>
-  );
-};
+  )
+}
 
-export default PetDetails;
+export default PetDetails

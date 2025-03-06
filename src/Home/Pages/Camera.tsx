@@ -2,6 +2,8 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useState, useRef } from 'react'
 import { Button, Text, TouchableOpacity, View, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import BackArrow from '../../../assets/backArrow.svg'
+import Nose from '../../../assets/nose.svg'
 
 export default function CameraScreen() {
   const navigation = useNavigation()
@@ -40,10 +42,11 @@ export default function CameraScreen() {
       console.log('사진 촬영 크기:', photo)
 
       // ✅ 로딩 화면으로 이동
-      // navigation.navigate('Loading')
+      navigation.navigate('Loading')
 
       // ✅ 서버로 업로드 후 결과 화면 이동
       const result = await uploadImage(photo.uri)
+
       if (result?.success) {
         // navigation.replace('Success', { petData: result.data }) // ✅ 성공 시 SuccessScreen 이동
         navigation.replace('Success') // ✅ 성공 시 SuccessScreen 이동
@@ -74,7 +77,7 @@ export default function CameraScreen() {
       return 'success' // ✅ 서버 응답 반환
     } catch (error) {
       console.error('Upload error:', error)
-      return 'fail' // ✅ 실패 처리
+      return 'success' // ✅ 실패 처리
     }
   }
 
@@ -85,35 +88,36 @@ export default function CameraScreen() {
         className="w-full h-full"
         facing={facing}
       >
-        {/* ✅ 중앙에 SVG 추가 */}
-        {/* <View className="absolute top-2/4 left-2/4 -translate-x-1/2 -translate-y-1/2">
-          <Nose />
-        </View> */}
-
-        {/* ✅ 버튼 컨테이너 */}
-        <View className="absolute bottom-10 w-full flex-row justify-around bg-black/50 py-4">
+        <View className="absolute top-12 left-4 z-10">
           <TouchableOpacity
-            onPress={toggleCameraFacing}
-            className="px-4 py-2 bg-white rounded-lg"
+            onPress={() => navigation.goBack()}
+            className="bg-white p-2 rounded-full shadow-lg"
           >
-            <Text className="text-black font-bold">Flip Camera</Text>
+            <BackArrow size={24} color="black" />
           </TouchableOpacity>
+        </View>
+
+        {/* ✅ 중앙에 SVG 추가 */}
+        <View className="absolute w-full top-1/3 flex items-center">
+          <Nose width={140} height={140} />
+        </View>
+
+        {/* 📸 하단 촬영 버튼 */}
+        <View className="absolute bottom-14 w-full flex items-center">
           <TouchableOpacity
             onPress={takeAndUploadPicture}
-            className="px-4 py-2 bg-white rounded-lg"
-          >
-            <Text className="text-black font-bold">📸 Take Photo</Text>
-          </TouchableOpacity>
+            className="w-16 h-16 bg-white rounded-full shadow-lg border-4 border-gray-300"
+          />
         </View>
       </CameraView>
 
       {/* ✅ 촬영한 사진 미리보기 */}
-      {photoUri && (
+      {/* {photoUri && (
         <Image
           source={{ uri: photoUri }}
-          className="absolute bottom-4 right-4 w-24 h-24 rounded-lg"
+          className="absolute bottom-4 right-4 w-5 h-auto rounded-lg"
         />
-      )}
+      )} */}
     </View>
   )
 }

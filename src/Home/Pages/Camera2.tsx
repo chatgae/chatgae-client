@@ -1,3 +1,4 @@
+// TODO: 개선해야 함
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'
 import { useState, useRef } from 'react'
 import { Button, Text, TouchableOpacity, View, Image } from 'react-native'
@@ -53,7 +54,7 @@ export default function App() {
     }
   }
 
-  // ☁️ 서버로 이미지 업로드
+  // ☁️ TODO: 서버로 이미지 업로드
   const uploadImage = async (photoUri: string) => {
     const formData = new FormData()
     formData.append('image', {

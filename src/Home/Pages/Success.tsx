@@ -9,7 +9,7 @@ export default function Success() {
   const { petData } = route.params || {}
 
   return (
-    <View className="flex-1 justify-center items-center bg-white px-6">
+    <View className="flex-1 bg-white px-6 justify-center items-center">
       {/* 뒤로 가기 버튼 */}
       {/* <TouchableOpacity
         onPress={() => navigation.goBack()}
@@ -19,14 +19,18 @@ export default function Success() {
       </TouchableOpacity> */}
 
       {/* 조회 성공 메시지 */}
-      <Text className="text-xl font-bold text-[#EAB439] mt-10">조회 성공</Text>
-      <Text className="text-gray-600 mt-2">조회된 반려동물입니다.</Text>
+      <View className="absolute top-0 left-0 w-full h-[300px] items-center mb-8">
+        <Text className="text-2xl font-bold text-[#D8961A]">조회 성공</Text>
+        <Text className="text-lg text-gray-600 mt-1">
+          조회된 반려동물입니다.
+        </Text>
+      </View>
 
       {/* ✅ 업로드된 반려동물 정보 */}
-      <View className="mt-6 p-6 bg-white shadow-md rounded-lg items-center relative">
+      <View className="bg-white shadow-lg rounded-lg items-center p-6 relative w-3/4">
         {/* ✅ SuccessIcon을 반려동물 이미지 위쪽 중앙에 배치 */}
-        <View className="absolute -top-6">
-          <SuccessIcon width={40} height={40} />
+        <View className="absolute -top-8 bg-white p-2 rounded-full ">
+          <SuccessIcon width={50} height={50} />
         </View>
 
         {/* 반려동물 사진 */}
@@ -41,19 +45,21 @@ export default function Success() {
           {/* {petData.name} ({petData.age}세) */}
           제임스(5세)
         </Text>
-        <Text className="text-gray-500">
+        <Text className="text-gray-500 mt-2">
           {/* {petData.breed} - {petData.gender} */}
           비글 - 여아
         </Text>
       </View>
 
       {/* 확인 버튼 */}
-      <TouchableOpacity
-        onPress={() => navigation.replace('Main')}
-        className="mt-8 bg-[#6B400C] py-3 px-8 rounded-full"
-      >
-        <Text className="text-white font-bold">확인</Text>
-      </TouchableOpacity>
+      <View className="absolute bottom-10 w-full px-6">
+        <TouchableOpacity
+          className="w-full h-12 bg-[#B07638] rounded-2xl justify-center items-center shadow-md"
+          onPress={() => navigation.navigate('Main')}
+        >
+          <Text className="text-lg text-white font-bold">확인</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }
