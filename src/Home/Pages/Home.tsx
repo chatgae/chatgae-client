@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,68 +8,70 @@ import {
   ScrollView,
   FlatList,
   RefreshControl,
-} from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import AlarmIcon from '../../../assets/alarm.svg'
-import { usePetStore } from '../Stores/UsePetStore'
-import GetPets from '../Hooks/GetPets'
-import { useLostDogsStore } from '../Stores/UseLastPetStore'
-import GetLastPets from '../Hooks/GetLastPets'
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AlarmIcon from "../../../assets/alarm.svg";
+import { usePetStore } from "../Stores/UsePetStore";
+import GetPets from "../Hooks/GetPets";
+import { useLostDogsStore } from "../Stores/UseLastPetStore";
+import GetLastPets from "../Hooks/GetLastPets";
+import QRModal from "./QRModal";
 
 export default function Home() {
-  const navigation = useNavigation()
-  const { lostDogs, setLostDogs } = useLostDogsStore()
-  const { myPets, setMyPets } = usePetStore()
-  const { loading, error, refetch } = GetPets() // ✅ 반려가족 API
-  const { lastLoading, lastRefetch } = GetLastPets() // ✅ 유실견 API 추가
+  const navigation = useNavigation();
+  const { lostDogs, setLostDogs } = useLostDogsStore();
+  const { myPets, setMyPets } = usePetStore();
+  const { loading, error, refetch } = GetPets(); // ✅ 반려가족 API
+  const { lastLoading, lastRefetch } = GetLastPets(); // ✅ 유실견 API 추가
+  const [selectedLostDog, setSelectedLostDog] = useState(null);
 
   // ✅ 전체 로딩 상태 (반려가족 + 유실견)
-  const allLoading = loading || lastLoading
+  const allLoading = loading || lastLoading;
 
   // ✅ 자동 슬라이드 기능
-  const flatListRef = useRef<FlatList>(null)
-  const scrollIndex = useRef(0)
+  const flatListRef = useRef<FlatList>(null);
+  const scrollIndex = useRef(0);
 
   useEffect(() => {
     if (lostDogs.length > 1) {
       const interval = setInterval(() => {
         if (flatListRef.current) {
-          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length
+          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length;
           flatListRef.current.scrollToIndex({
             index: scrollIndex.current,
             animated: true,
-          })
+          });
         }
-      }, 3000) // 3초마다 슬라이드
+      }, 3000); // 3초마다 슬라이드
 
-      return () => clearInterval(interval)
+      return () => clearInterval(interval);
     }
-  }, [lostDogs])
+  }, [lostDogs]);
 
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchAllData = async () => {
-    setRefreshing(true)
-    console.log('🔄 새로고침 시작')
+    setRefreshing(true);
+    console.log("🔄 새로고침 시작");
 
     try {
-      await refetch()
-      console.log('✅ 반려가족 정보 갱신 완료')
+      await refetch();
+      console.log("✅ 반려가족 정보 갱신 완료");
 
-      await lastRefetch()
-      console.log('✅ 유실견 정보 갱신 완료')
+      await lastRefetch();
+      console.log("✅ 유실견 정보 갱신 완료");
     } catch (error) {
-      console.error('❌ 새로고침 중 오류 발생:', error)
+      console.error("❌ 새로고침 중 오류 발생:", error);
     } finally {
-      setRefreshing(false)
-      console.log('✅ 새로고침 완료')
+      setRefreshing(false);
+      console.log("✅ 새로고침 완료");
     }
-  }
+  };
 
   // ✅ Pull-to-Refresh 동작
   const onRefresh = useCallback(() => {
-    fetchAllData()
-  }, [])
+    fetchAllData();
+  }, []);
 
   return (
     <ScrollView
@@ -84,7 +86,7 @@ export default function Home() {
     >
       <View className="flex-row justify-between items-center mb-4">
         <Image
-          source={require('../../../assets/logo.png')}
+          source={require("../../../assets/logo.png")}
           className="w-16 h-8"
         />
         <TouchableOpacity>
@@ -101,7 +103,7 @@ export default function Home() {
         {myPets.length !== 0 && (
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate('PetProfile')}
+            onPress={() => navigation.navigate("PetProfile")}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
@@ -151,7 +153,7 @@ export default function Home() {
           </Text>
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate('PetProfile')}
+            onPress={() => navigation.navigate("PetProfile")}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
@@ -162,7 +164,7 @@ export default function Home() {
       <TouchableOpacity
         className="bg-[#EAB439] rounded-full py-4 px-6 flex-row items-center justify-center shadow-md mt-10"
         activeOpacity={0.8}
-        onPress={() => navigation.navigate('비문카메라')}
+        onPress={() => navigation.navigate("Law")}
       >
         <Text className="text-white font-bold text-lg">
           유기견을 발견했어요
@@ -189,6 +191,7 @@ export default function Home() {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
+              onPress={() => setSelectedLostDog(item)}
               className="bg-white shadow-sm rounded-xl mx-2"
               style={{ width: 180, height: 230 }}
               activeOpacity={0.8}
@@ -212,6 +215,11 @@ export default function Home() {
           )}
         />
       )}
+      {/* ✅ QR 코드 모달 */}
+      <QRModal
+        selectedLostDog={selectedLostDog}
+        closeModal={() => setSelectedLostDog(null)}
+      />
     </ScrollView>
-  )
+  );
 }
