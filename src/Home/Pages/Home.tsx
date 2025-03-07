@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -8,80 +8,83 @@ import {
   ScrollView,
   FlatList,
   RefreshControl,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import AlarmIcon from "../../../assets/alarm.svg";
-import { usePetStore } from "../Stores/UsePetStore";
-import GetPets from "../Hooks/GetPets";
-import { useLostDogsStore } from "../Stores/UseLastPetStore";
-import GetLastPets from "../Hooks/GetLastPets";
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import AlarmIcon from '../../../assets/alarm.svg'
+import { usePetStore } from '../Stores/UsePetStore'
+import GetPets from '../Hooks/GetPets'
+import { useLostDogsStore } from '../Stores/UseLastPetStore'
+import GetLastPets from '../Hooks/GetLastPets'
 
 export default function Home() {
-  const navigation = useNavigation();
-  const { lostDogs, setLostDogs } = useLostDogsStore();
-  const { myPets, setMyPets } = usePetStore();
-  const { loading, error, refetch } = GetPets(); // ✅ 반려가족 API
-  const { lastLoading, lastRefetch } = GetLastPets(); // ✅ 유실견 API 추가
+  const navigation = useNavigation()
+  const { lostDogs, setLostDogs } = useLostDogsStore()
+  const { myPets, setMyPets } = usePetStore()
+  const { loading, error, refetch } = GetPets() // ✅ 반려가족 API
+  const { lastLoading, lastRefetch } = GetLastPets() // ✅ 유실견 API 추가
 
   // ✅ 전체 로딩 상태 (반려가족 + 유실견)
-  const allLoading = loading || lastLoading;
+  const allLoading = loading || lastLoading
 
   // ✅ 자동 슬라이드 기능
-  const flatListRef = useRef<FlatList>(null);
-  const scrollIndex = useRef(0);
+  const flatListRef = useRef<FlatList>(null)
+  const scrollIndex = useRef(0)
 
   useEffect(() => {
     if (lostDogs.length > 1) {
       const interval = setInterval(() => {
         if (flatListRef.current) {
-          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length;
+          scrollIndex.current = (scrollIndex.current + 1) % lostDogs.length
           flatListRef.current.scrollToIndex({
             index: scrollIndex.current,
             animated: true,
-          });
+          })
         }
-      }, 3000); // 3초마다 슬라이드
+      }, 3000) // 3초마다 슬라이드
 
-      return () => clearInterval(interval);
+      return () => clearInterval(interval)
     }
-  }, [lostDogs]);
+  }, [lostDogs])
 
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false)
 
   const fetchAllData = async () => {
-    setRefreshing(true);
-    console.log("🔄 새로고침 시작");
+    setRefreshing(true)
+    console.log('🔄 새로고침 시작')
 
     try {
-      await refetch();
-      console.log("✅ 반려가족 정보 갱신 완료");
+      await refetch()
+      console.log('✅ 반려가족 정보 갱신 완료')
 
-      await lastRefetch();
-      console.log("✅ 유실견 정보 갱신 완료");
+      await lastRefetch()
+      console.log('✅ 유실견 정보 갱신 완료')
     } catch (error) {
-      console.error("❌ 새로고침 중 오류 발생:", error);
+      console.error('❌ 새로고침 중 오류 발생:', error)
     } finally {
-      setRefreshing(false);
-      console.log("✅ 새로고침 완료");
+      setRefreshing(false)
+      console.log('✅ 새로고침 완료')
     }
-  };
+  }
 
   // ✅ Pull-to-Refresh 동작
   const onRefresh = useCallback(() => {
-    fetchAllData();
-  }, []);
+    fetchAllData()
+  }, [])
 
   return (
     <ScrollView
       className="flex-1 bg-white px-4 pt-12"
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          className="invisible"
+        />
       }
     >
-      {/* 헤더 */}
       <View className="flex-row justify-between items-center mb-4">
         <Image
-          source={require("../../../assets/logo.png")}
+          source={require('../../../assets/logo.png')}
           className="w-16 h-8"
         />
         <TouchableOpacity>
@@ -89,18 +92,16 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
-      {/* ✅ 전체 로딩 표시 (로딩 상태가 하나만 나오도록 설정) */}
       {allLoading && (
         <ActivityIndicator size="large" color="#EAB439" className="my-4" />
       )}
 
-      {/* 반려가족 섹션 */}
       <View className="flex flex-row justify-between">
         <Text className="text-xl font-bold">나의 반려가족</Text>
         {myPets.length !== 0 && (
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate("PetProfile")}
+            onPress={() => navigation.navigate('PetProfile')}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
@@ -109,17 +110,17 @@ export default function Home() {
 
       {error ? (
         <Text className="text-red-500">에러 발생: {error}</Text>
-      ) : myPets.length > 0 ? ( // ✅ 반려가족이 있으면 슬라이드 표시
+      ) : myPets.length > 0 ? (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           className="flex"
         >
-          <View className="flex-row space-x-4 mt-5">
+          <View className="flex-row space-x-4 mt-5 pb-2">
             {myPets.map((pet) => (
               <View
                 key={pet.petId}
-                className="bg-white shadow-md rounded-xl p-4 w-[134px] h-[144px] items-center"
+                className="bg-white shadow-sm rounded-xl p-4 w-[134px] h-[144px] items-center"
               >
                 {/* 🐶 프로필 이미지 (원형) */}
                 <Image
@@ -150,7 +151,7 @@ export default function Home() {
           </Text>
           <TouchableOpacity
             className="bg-[#6B400C] py-2 px-6 rounded-full self-center"
-            onPress={() => navigation.navigate("PetProfile")}
+            onPress={() => navigation.navigate('PetProfile')}
           >
             <Text className="text-white font-bold">등록하기</Text>
           </TouchableOpacity>
@@ -159,9 +160,9 @@ export default function Home() {
 
       {/* 유실견 신고 버튼 */}
       <TouchableOpacity
-        className="bg-[#EAB439] rounded-lg py-4 px-6 flex-row items-center justify-center shadow-md mt-10"
+        className="bg-[#EAB439] rounded-full py-4 px-6 flex-row items-center justify-center shadow-md mt-10"
         activeOpacity={0.8}
-        onPress={() => navigation.navigate("비문카메라")}
+        onPress={() => navigation.navigate('비문카메라')}
       >
         <Text className="text-white font-bold text-lg">
           유기견을 발견했어요
@@ -179,6 +180,7 @@ export default function Home() {
         </View>
       ) : (
         <FlatList
+          className="pb-2 bg-white"
           ref={flatListRef}
           data={lostDogs}
           horizontal
@@ -186,21 +188,30 @@ export default function Home() {
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View className="bg-white border border-gray-300 shadow-md rounded-lg p-4 w-48 mx-2">
+            <TouchableOpacity
+              className="bg-white shadow-sm rounded-xl mx-2"
+              style={{ width: 180, height: 230 }}
+              activeOpacity={0.8}
+            >
               <Image
                 source={{ uri: item.imageUrl }}
-                className="w-24 h-24 rounded-lg"
+                className="w-full h-28 rounded-t-lg "
+                resizeMode="cover"
               />
-              <Text className="text-center font-semibold mt-2">
-                {item.address}
-              </Text>
-              <Text className="text-center text-gray-500">
-                등록일: {item.registeredAt}
-              </Text>
-            </View>
+
+              <View className="flex-1 justify-center">
+                <Text className="text-center font-semibold text-sm text-[#333] px-4">
+                  {item.address}
+                </Text>
+
+                <Text className="text-center text-[#868686] text-xs mt-4">
+                  {item.registeredAt}
+                </Text>
+              </View>
+            </TouchableOpacity>
           )}
         />
       )}
     </ScrollView>
-  );
+  )
 }

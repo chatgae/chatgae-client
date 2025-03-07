@@ -1,15 +1,16 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
 import SuccessIcon from '../../../assets/success.svg'
 import { usePetStore } from '../Stores/UsePetStore'
+import { RootStackParamList } from '../../App'
 
 export default function Success() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const { petData } = usePetStore()
 
   // ✅ petData가 없을 경우 기본값 제공
-  const age = petData?.age || 'N/A'
+  const age = petData?.age || '0'
   const breed = petData?.breed || '알 수 없음'
   const gender =
     petData?.gender === 'M'
@@ -40,7 +41,11 @@ export default function Success() {
 
         {/* 반려동물 사진 */}
         <Image
-          source={{ uri: profileImage }}
+          source={
+            typeof profileImage === 'string'
+              ? { uri: profileImage }
+              : profileImage
+          }
           className="w-32 h-32 rounded-full"
         />
 

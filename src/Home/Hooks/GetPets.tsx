@@ -31,7 +31,7 @@ export default function GetPets() {
         throw new Error('반려동물 정보를 불러오는 데 실패했습니다.')
       }
     } catch (err: any) {
-      console.error('❌ 반려동물 데이터 로딩 실패:', err.message)
+      console.log('❌ 반려동물 데이터 로딩 실패:', err.message)
       setError(err.message || '알 수 없는 오류 발생')
     } finally {
       setLoading(false)

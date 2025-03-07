@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import { View, Animated, Easing } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from '../assets/splashIcon.svg'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from './App'
 
 export default function Splash() {
-  const navigation = useNavigation()
-
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   // ✅ 애니메이션 값 (회전)
   const rotateAnim = useRef(new Animated.Value(0)).current
 
@@ -48,7 +49,6 @@ export default function Splash() {
 
   return (
     <View className="flex-1 bg-[#FAF0C6] justify-center items-center">
-      {/* ✅ 회전 애니메이션 적용 */}
       <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
         <Icon />
       </Animated.View>

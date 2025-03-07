@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
 import FailIcon from '../../../assets/fail.svg'
+import { RootStackParamList } from '../../App'
 
 export default function Fail() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
   return (
     <View className="flex-1 bg-white px-6 justify-center items-center">

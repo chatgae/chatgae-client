@@ -6,14 +6,14 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-} from "react-native";
-import * as ImagePicker from "expo-image-picker"; // ✅ expo-image-picker import
-import Icon from "react-native-vector-icons/Feather";
-import { styles } from "../Styles/PetProfileStyles";
-import { usePetStore } from "../Zustand/PetStore";
+} from 'react-native'
+import * as ImagePicker from 'expo-image-picker' // ✅ expo-image-picker import
+import Icon from 'react-native-vector-icons/Feather'
+import { styles } from '../Styles/PetProfileStyles'
+import { usePetStore } from '../Zustand/PetStore'
 
 const PetProfile = ({ navigation }: any) => {
-  const { petInfo, setPetName, setProfileImage } = usePetStore();
+  const { petInfo, setPetName, setProfileImage } = usePetStore()
 
   // ✅ 미디어 라이브러리 권한 요청
   useEffect(() => {
@@ -41,7 +41,7 @@ const PetProfile = ({ navigation }: any) => {
     console.log('📸 이미지 선택 결과:', result)
 
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
+      setProfileImage(result.assets[0].uri)
     }
   }
 
@@ -82,10 +82,10 @@ const PetProfile = ({ navigation }: any) => {
               style={styles.image}
             />
           ) : (
-            <>
+            <View>
               <Icon name="camera" size={24} color="#EFC655" />
               <Text style={styles.imageCount}>0 / 1</Text>
-            </>
+            </View>
           )}
         </TouchableOpacity>
 
@@ -95,7 +95,7 @@ const PetProfile = ({ navigation }: any) => {
           style={styles.input}
           placeholder="이름을 입력해주세요"
           placeholderTextColor="#BDBDBD"
-          value={petInfo.petName ?? ""}
+          value={petInfo.petName ?? ''}
           onChangeText={setPetName}
         />
       </View>
@@ -110,7 +110,7 @@ const PetProfile = ({ navigation }: any) => {
           onPress={() =>
             petInfo.petName &&
             petInfo.profileImage &&
-            navigation.navigate("PetNose")
+            navigation.navigate('PetNose')
           }
           disabled={!(petInfo.petName && petInfo.profileImage)}
         >

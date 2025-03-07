@@ -8,13 +8,15 @@ import {
   View,
   Image,
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
 import axios from 'axios'
 import BackArrow from '../../../assets/backArrow.svg'
 import DogBodyLine from '../../../assets/dogBodyLine.svg'
+import { RootStackParamList } from '../../App'
+import { StackNavigationProp } from '@react-navigation/stack'
 
 export default function CameraScreen2() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
   const [facing, setFacing] = useState<CameraType>('back')
   const [photoUri, setPhotoUri] = useState<string | null>(null)
   const [permission, requestPermission] = useCameraPermissions()
@@ -60,7 +62,7 @@ export default function CameraScreen2() {
     console.log('✅ 사진 촬영 완료:', photo.uri)
 
     // ✅ 로딩 화면으로 이동
-    navigation.navigate('Loading')
+    navigation.navigate('Loading', { mode: '등록' })
 
     // ✅ 서버로 업로드 후 결과 화면 이동
     setLoading(true)
@@ -154,14 +156,6 @@ export default function CameraScreen2() {
           />
         </View>
       </CameraView>
-
-      {/* ✅ 촬영한 사진 미리보기 */}
-      {/* {photoUri && (
-        <Image
-          source={{ uri: photoUri }}
-          className="absolute bottom-4 right-4 w-16 h-16 rounded-lg"
-        />
-      )} */}
     </View>
   )
 }

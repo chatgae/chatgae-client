@@ -9,7 +9,6 @@ import MedicalScreen from './Preparing'
 import MyPageScreen from './Preparing'
 import CameraScreen from './Home/Pages/Camera'
 import CameraScreen2 from './Home/Pages/Camera2'
-import KakaoMap from './Home/Pages/KakaoMap'
 import Success from './Home/Pages/Success'
 import Fail from './Home/Pages/Fail'
 import LoadingScreen from './Loading'
@@ -19,6 +18,7 @@ import PetNose from './Register/Pages/PetNose'
 import PetBreed from './Register/Pages/PetBreed'
 import PetDetails from './Register/Pages/PetDetails'
 import Complete from './Register/Pages/Complete'
+import Law from './Home/Pages/Law'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -63,7 +63,6 @@ export default function App() {
         <Stack.Screen name="HomeMain" component={MainTab} />
         <Stack.Screen name="비문카메라" component={CameraScreen} />
         <Stack.Screen name="CameraScreen2" component={CameraScreen2} />
-        <Stack.Screen name="KakaoMap" component={KakaoMap} />
         <Stack.Screen name="Success" component={Success} />
         <Stack.Screen name="Fail" component={Fail} />
         <Stack.Screen name="PetProfile" component={PetProfile} />
@@ -71,6 +70,7 @@ export default function App() {
         <Stack.Screen name="PetBreed" component={PetBreed} />
         <Stack.Screen name="PetDetails" component={PetDetails} />
         <Stack.Screen name="Complete" component={Complete} />
+        <Stack.Screen name="Law" component={Law} />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -78,13 +78,12 @@ export default function App() {
 
 export type RootStackParamList = {
   Splash: undefined
-  Loading: { mode: '조회' | '등록' }
+  Loading: { mode: '조회' | '등록' | '확인' }
   Main: undefined
   Register: undefined
   HomeMain: undefined
   비문카메라: undefined
   CameraScreen2: undefined
-  KakaoMap: undefined
   Success: { petData?: any } // Add petData parameter for Success screen
   Fail: undefined
   PetProfile: undefined
@@ -96,4 +95,5 @@ export type RootStackParamList = {
   커뮤니티: undefined
   건강: undefined
   마이페이지: undefined
+  Law: undefined
 }
