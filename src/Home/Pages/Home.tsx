@@ -15,6 +15,7 @@ import { usePetStore } from "../Stores/UsePetStore";
 import GetPets from "../Hooks/GetPets";
 import { useLostDogsStore } from "../Stores/UseLastPetStore";
 import GetLastPets from "../Hooks/GetLastPets";
+import QRModal from "./QRModal";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -22,6 +23,9 @@ export default function Home() {
   const { myPets, setMyPets } = usePetStore();
   const { loading, error, refetch } = GetPets(); // ✅ 반려가족 API
   const { lastLoading, lastRefetch } = GetLastPets(); // ✅ 유실견 API 추가
+
+  const [selectedLostDog, setSelectedLostDog] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // ✅ 전체 로딩 상태 (반려가족 + 유실견)
   const allLoading = loading || lastLoading;
@@ -186,7 +190,10 @@ export default function Home() {
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View className="bg-white border border-gray-300 shadow-md rounded-lg p-4 w-48 mx-2">
+            <TouchableOpacity
+              onPress={() => setSelectedLostDog(item)} // ✅ 유실견 클릭 시 QR 모달 열기
+              className="bg-white border border-gray-300 shadow-md rounded-lg p-4 w-48 mx-2"
+            >
               <Image
                 source={{ uri: item.imageUrl }}
                 className="w-24 h-24 rounded-lg"
@@ -197,10 +204,15 @@ export default function Home() {
               <Text className="text-center text-gray-500">
                 등록일: {item.registeredAt}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       )}
+      {/* ✅ QR 코드 모달 */}
+      <QRModal
+        selectedLostDog={selectedLostDog}
+        closeModal={() => setSelectedLostDog(null)}
+      />
     </ScrollView>
   );
 }
