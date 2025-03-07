@@ -5,6 +5,14 @@
 
 <br />
 
+## 👩🏻‍💻 Developer
+| zino.heo (허진호) | hazel.park (박희진) |
+|:---:|:---:|
+|  <a href="https://github.com/miginho12"> <img src="https://avatars.githubusercontent.com/miginho12" width=100px alt="_"/> </a> | <a href="https://github.com/gmlwlsdl"> <img src="https://avatars.githubusercontent.com/gmlwlsdl" width=100px alt="_"/> </a> |
+|<a href="https://github.com/gmlwlsdl">@miginho12</a> | <a href="https://github.com/gmlwlsdl">@gmlwlsdl</a> |
+
+<br />
+
 ## 🛠️ Stack
 ![expo](https://img.shields.io/badge/expo-000020?style=flat&logo=expo&logoColor=white) 
 ![npm](https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white) 
