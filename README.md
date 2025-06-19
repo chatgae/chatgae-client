@@ -8,8 +8,8 @@
 ## 👩🏻‍💻 Developer
 | zino.heo (허진호) | hazel.park (박희진) |
 |:---:|:---:|
-|  <a href="https://github.com/miginho12"> <img src="https://avatars.githubusercontent.com/miginho12" width=100px alt="_"/> </a> | <a href="https://github.com/miginho12"> <img src="https://avatars.githubusercontent.com/gmlwlsdl" width=100px alt="_"/> </a> |
-|<a href="https://github.com/gmlwlsdl">@miginho12</a> | <a href="https://github.com/gmlwlsdl">@gmlwlsdl</a> |
+|  <a href="https://github.com/miginho12"> <img src="https://avatars.githubusercontent.com/miginho12" width=100px alt="_"/> </a> | <a href="https://github.com/gmlwlsdl"> <img src="https://avatars.githubusercontent.com/gmlwlsdl" width=100px alt="_"/> </a> |
+|<a href="https://github.com/miginho12">@miginho12</a> | <a href="https://github.com/gmlwlsdl">@gmlwlsdl</a> |
 
 <br />
 
